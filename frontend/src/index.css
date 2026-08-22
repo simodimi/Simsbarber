@@ -1,0 +1,33 @@
+:root {
+  --text: #1a1a1a;
+  --text-sec: #6b7280;
+  --text-ter: white;
+  --succes: #27ae60;
+  --error: #e74c3c;
+  --warning: #f39c12;
+  --bg: #1a1a2e;
+  --bg-sec: #f8f9fa;
+  --bg-ter: #e8c97e;
+  --shadow:
+    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+  --police1: "Roboto", sans-serif; /*texte*/
+  --police2: "Playfair Display", serif; /*titre,sous-titre*/
+  --police3: "DM Mono", monospace; /*prix,stat*/
+  --police4: "Inter", sans-serif; /*button,badge*/
+  /*color: var(--text-ter);
+  background: var(--bg);*/
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

@@ -1,0 +1,411 @@
+.prestationAdd {
+  width: 90%;
+  display: flex;
+  justify-content: end;
+  padding: 0 5%;
+}
+.NoCategorie {
+  text-align: center;
+  margin-top: 150px;
+}
+.NoCategorie p {
+  font-size: 50px;
+  font-weight: 700;
+  font-family: var(--police1);
+}
+.categoriesButton {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 30px;
+  margin: 20px 0;
+}
+.categoriesFormHeaderCard p {
+  font-family: var(--police1);
+  font-weight: 700;
+}
+.categoriesFormHeaderCardImage {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.categoriesFormHeaderCardImageSelect {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  background-color: transparent;
+  border-radius: 10px;
+  border: 2px solid var(--bg-ter);
+}
+.categoriesFormHeaderCardImageSelect span {
+  position: absolute;
+  right: -25px;
+}
+.categoriesFormHeaderCardImageSelect span img {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+.categoriesFormHeaderCardCompteur input {
+  width: calc(100% - 34px);
+  height: 50px;
+  border-radius: 10px;
+  outline: none;
+  border: 2px solid var(--bg-ter);
+  padding: 0 15px;
+}
+.categoriesFormHeaderCardCompteur {
+  position: relative;
+}
+.categoriesFormHeaderCardCompteur span {
+  font-weight: 700;
+  font-family: var(--police4);
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.categoriesFormTextAreaCompteur {
+  position: relative;
+}
+.categoriesFormTextAreaCompteur textarea {
+  resize: none;
+  width: calc(100% - 34px);
+  height: 100px;
+  border-radius: 10px;
+  outline: none;
+  border: 2px solid var(--bg-ter);
+  padding: 20px 15px;
+}
+.categoriesFormTextAreaCompteur span {
+  position: absolute;
+  right: 20px;
+  font-weight: 700;
+  font-family: var(--police4);
+  bottom: 20px;
+}
+#categoriesFormHeaderCardImageSelect {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.CatHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.CatHeader p {
+  font-weight: 700;
+  font-family: var(--police1);
+  font-size: 18px;
+}
+.categoriesFormHeader h3 {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 24px;
+  text-align: center;
+  color: var(--bg-ter);
+}
+.AccueilPrestationsAdmin {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.AccueilHeaderAdmin {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.ProfilMessageAdmin {
+  display: flex;
+  width: 90%;
+  height: calc(100vh - 305px);
+  gap: 50px;
+  padding: 50px 5%;
+}
+.ProfilMessageAdmins {
+  display: flex;
+  width: 90%;
+  height: calc(100vh - 315px);
+  /*padding: 50px 5%;*/
+  margin: 10px 5%;
+  overflow-x: auto;
+  overflow-y: auto;
+  outline: 2px solid var(--bg-ter);
+}
+.ProfilMessageAdmins table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+.ProfilMessageAdmins th,
+td {
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+/* En-tête */
+th {
+  background-color: var(--text);
+  color: white;
+  font-family: var(--police1);
+  height: 50px;
+}
+tbody tr td img {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+tbody tr:nth-child(2n + 1) {
+  background: #ece9e9;
+}
+table thead {
+  height: 50px;
+}
+table tbody {
+  height: calc(100% - 50px);
+  font-family: var(--police1);
+}
+tbody tr td {
+  padding: 5px 0;
+}
+/*style={{ overflowX: "auto", overflowY: "auto", scrollbarWidth: "thin" }}*/
+.ProfilMessageAdmins::-webkit-scrollbar {
+  width: 5px;
+}
+
+.ProfilMessageAdmins::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+.ProfilMessageAdmins::-webkit-scrollbar-thumb {
+  background: var(--bg-ter);
+  border-radius: 10px;
+}
+
+.ProfilMessageAdmins::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+.DeleteOption img {
+  width: 300px;
+  height: 300px;
+  border-radius: 20px;
+  object-fit: scale-down;
+}
+.DeleteOption p {
+  font-weight: 700;
+  font-family: var(--police1);
+}
+.buttonDelete {
+  display: flex;
+  gap: 50px;
+}
+.DeleteOption {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+.FilterClient {
+  padding: 25px 0 0 0px;
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+.FilterClientHeader {
+  border: none;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+
+  position: relative;
+}
+.FilterClientHeaderBtn {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+.FilterClientHeaderBtns {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.FilterClientCard p {
+  margin: 0;
+}
+.FilterClientCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+  font-family: var(--police1);
+  position: absolute;
+  z-index: 5;
+  margin-top: 70px;
+  background-color: #f8f9fa;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  border-radius: 20px;
+  border: 1px solid var(--bg-ter);
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+}
+.FilterClientCardEl {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+}
+.FilterClientCardEl input {
+  width: 90%;
+  height: 50px;
+  border-radius: 10px;
+  outline: 2px solid var(--bg-ter);
+  border: none;
+  padding: 0 5%;
+}
+.AvisCards {
+  width: 60%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  height: auto;
+  max-height: calc(100vh - 322px);
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  border-radius: 20px;
+  outline: 2px solid var(--bg-ter);
+
+  gap: 10px;
+}
+.AvisHeaders {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 100px);
+
+  color: white;
+  padding: 10px 50px;
+  border-radius: 20px;
+}
+.AvisHeadersMain {
+  display: flex;
+  gap: 20px;
+  font-weight: 700;
+  font-family: var(--police1);
+  width: fit-content;
+  margin: auto;
+}
+.AvisHeadersMain:hover {
+  outline: 1px solid var(--bg-ter);
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 0px 10px;
+}
+.AvisHeadersMain img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.AvisHeadersCardList {
+  width: 100%;
+  height: auto;
+  max-height: 150px;
+  overflow-y: auto;
+  text-align: center;
+}
+.AvisHeadersCardList p {
+  border: 2px solid var(--bg-ter);
+  padding: 10px 0;
+  text-align: center;
+  font-weight: 800;
+  font-family: var(--police4);
+  border-radius: 10px;
+}
+.FilterClientCardels {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+.FilterClientCardelx span {
+  border: 2px solid var(--bg-ter);
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.FilterClientCardelx.active {
+  border: 2px solid var(--bg-ter);
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: var(--bg);
+  color: white;
+}
+.FilterClientCardelx span:hover {
+  border: 2px solid var(--bg-ter);
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: var(--bg);
+  color: white;
+}
+.FilterClientC {
+  border: 2px solid var(--bg-ter);
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: red;
+  color: white;
+}
+.CartemainGeneral {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 10%;
+}
+.keyIndicators {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  width: 100%;
+  margin: 30px 0;
+  background-color: #ece9e9;
+}
+.keyIndicatorsCard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--police1);
+}
+.keyIndicatorsCard:hover {
+  background-color: var(--bg);
+  color: var(--bg-ter);
+}
+.keyIndicatorsCard h3 {
+  color: green;
+}
+.keypage h2 {
+  text-align: center;
+  margin: 60px 0 60px 0;
+}
+.Ca-Header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-CaHeader {
+  position: absolute;
+  display: flex;
+  right: 0;
+}

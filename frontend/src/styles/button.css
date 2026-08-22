@@ -1,0 +1,91 @@
+.btn {
+  padding: 20px 50px;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--police4);
+  color: var(--text-ter);
+  font-size: medium;
+  background-color: white;
+  cursor: pointer;
+}
+.btn.succes {
+  background-color: var(--succes);
+}
+.btn.succes:hover {
+  background-color: green;
+}
+.btn.error {
+  background-color: var(--error);
+}
+.btn.error:hover {
+  background-color: red;
+}
+.btn.warning {
+  background-color: var(--warning);
+}
+.btn.warning:hover {
+  background-color: orange;
+}
+/* ===== Effet Glow doré — à ajouter à ta classe .btn existante ===== */
+
+.btn.glow {
+  position: relative;
+  background-color: #1a1a2e;
+  color: #e8c97e;
+  border: 1px solid #e8c97e;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.2s ease;
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+}
+
+/* Halo lumineux au survol */
+.btn.glow:hover {
+  box-shadow:
+    0 0 14px rgba(232, 201, 126, 0.55),
+    0 0 28px rgba(232, 201, 126, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Reflet animé qui traverse le bouton (effet "shimmer") */
+.btn.glow::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(232, 201, 126, 0.45) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  z-index: -1;
+  animation: shimmerSweep 3.5s ease-in-out infinite;
+}
+
+@keyframes shimmerSweep {
+  0% {
+    left: -150%;
+  }
+  60% {
+    left: 150%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+
+/* Désactive l'animation si le bouton est désactivé */
+.btn.glow:disabled {
+  box-shadow: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn.glow:disabled::before {
+  animation: none;
+}

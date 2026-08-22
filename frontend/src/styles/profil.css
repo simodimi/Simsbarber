@@ -1,0 +1,668 @@
+.profilHeader {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 205px);
+}
+.ProfilHeaderMenu {
+  width: 350px;
+  background-color: var(--bg);
+  height: calc(100% -80px);
+  padding: 40px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--police1);
+}
+.ProfilHeaderMenuCard {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+}
+.ProfilHeaderMenuCard a {
+  text-decoration: none;
+  width: 100%;
+}
+.ProfilHeaderMenuTitle {
+  display: flex;
+  background-color: var(--text);
+  width: calc(100% - 4px);
+  justify-content: center !important;
+  border-radius: 10px;
+  color: white;
+  border: 2px solid white;
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+  position: relative;
+}
+.ProfilHeaderMenuTitle.active {
+  display: flex;
+  background-color: #1a1a2e;
+  width: calc(100% - 4px);
+  justify-content: center !important;
+  border-radius: 10px;
+  border: 2px solid var(--bg-ter);
+  color: var(--bg-ter);
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+}
+.ProfilHeaderMenuTitle:hover {
+  display: flex;
+  background-color: #1a1a2e;
+  width: calc(100% - 4px);
+  justify-content: center !important;
+  border-radius: 10px;
+  border: 2px solid var(--bg-ter);
+  color: var(--bg-ter);
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+}
+.ProfilHeaderMenuTitle span {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ProfilHeaderMenuImg img {
+  border-radius: 10px;
+  border: 2px solid var(--bg-ter);
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+}
+.profilHeaderContent {
+  width: calc(100% - 450px);
+  height: 100%;
+  max-height: calc(100% - 40px);
+  background-color: transparent;
+  padding: 20px 50px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+/* message  */
+.ProfilMessage {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  gap: 50px;
+}
+.ProfilMessageContact {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg);
+  font-family: var(--police1);
+  border-radius: 20px;
+  height: 100%;
+}
+
+.ProfilMessageContactCardPerson {
+  display: flex;
+  gap: 10px;
+  padding-left: 10%;
+  overflow-x: hidden;
+  position: relative;
+  align-items: center;
+  padding-top: 10px !important;
+  padding-bottom: 10px;
+  background-color: var(--text);
+  width: calc(90% - 4px);
+  border-radius: 10px;
+  color: white;
+  border: 2px solid white;
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+  overflow-y: hidden;
+  flex-shrink: 0;
+}
+.ProfilResContactCardPerson {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  overflow-x: hidden;
+  position: relative;
+  padding-top: 10px !important;
+  padding-bottom: 10px;
+  background-color: var(--text);
+  width: calc(100% - 4px);
+  border-radius: 10px;
+  color: white;
+  border: 2px solid white;
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+  overflow-y: hidden;
+  flex-shrink: 0;
+}
+.ProfilParaContactCardPerson {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  overflow-x: hidden;
+  position: relative;
+  padding-top: 10px !important;
+  padding-bottom: 10px;
+  background-color: var(--text);
+  width: calc(100% - 4px);
+  border-radius: 10px;
+  color: white;
+  border: 2px solid white;
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+  overflow-y: hidden;
+  flex-shrink: 0;
+}
+.ProfilMessageContactCardPerson img {
+  width: 50px;
+  height: 50px;
+}
+.ProfilResContactCard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  height: calc(100% - 80px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.ProfilParaContactCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 100%;
+  height: calc(100% - 80px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.ProfilMessageContactCard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  height: calc(100% - 100px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.NoUser {
+  width: 100%;
+  height: calc(100% - 100px);
+  text-align: center;
+  color: white;
+}
+.ProfilMessageContactCardPerson span {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+}
+.PrfilName {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.PrfilName p {
+  margin: 0;
+}
+.PrfilName p:first-child {
+  text-transform: capitalize;
+  font-weight: 700;
+}
+.ProfilMessageContactCardPerson:hover,
+.ProfilParaContactCardPerson:hover,
+.ProfilResContactCardPerson:hover {
+  background-color: #1a1a2e;
+  border-radius: 10px;
+  border: 2px solid var(--bg-ter);
+  color: var(--bg-ter);
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+  cursor: pointer;
+}
+.ProfilResContactCardPerson.active {
+  background-color: #1a1a2e;
+  border-radius: 10px;
+  border: 2px solid var(--bg-ter);
+  color: var(--bg-ter);
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+  cursor: pointer;
+}
+.ProfilMessageContactCardPerson.active,
+.ProfilParaContactCardPerson.active {
+  background-color: #1a1a2e;
+  border-radius: 10px;
+  border: 2px solid var(--bg-ter);
+  color: var(--bg-ter);
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+  cursor: pointer;
+}
+.ProfilMessageContacttitle {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 200px;
+}
+.ProfilParaContacttitle {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 80px;
+}
+.ProfilMessageContact input {
+  margin-bottom: 30px;
+  width: 90%;
+  height: 50px !important;
+  border-radius: 10px;
+  text-align: center;
+  outline: 2px solid var(--bg-ter);
+}
+.ProfilMessageContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: var(--bg);
+  border-radius: 20px;
+  border: 1px solid var(--bg-ter);
+}
+.ProfilMessageContents {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  background-color: var(--bg);
+  border-radius: 20px;
+  color: white;
+}
+.ProfilParaContentPerson {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  background-color: var(--bg-ter);
+  border-radius: 20px 20px 0 0;
+  height: 80px;
+}
+.ProfilMessageContentPerson {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: var(--bg-ter);
+  border-radius: 20px 20px 0 0;
+  height: 80px;
+}
+.ProfilMessageContentPerson img {
+  height: 60px;
+  width: 60px;
+  padding-left: 50px;
+}
+.ProfilMessageContentPerson p {
+  color: var(--text);
+  font-weight: 700;
+  font-family: var(--police1);
+}
+.ProfilParaContentPerson p {
+  color: var(--text);
+  font-weight: bold;
+  font-family: var(--police1);
+  text-transform: uppercase;
+  font-size: 28px;
+}
+.ProfilParaContentCard {
+  width: calc(100% - 60px);
+  height: calc(100% - 120px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  padding: 20px 30px;
+  font-family: var(--police1);
+  font-weight: 600;
+}
+.ProfilMessageContentSms {
+  width: calc(100% - 60px);
+  height: calc(100% - 270px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  padding: 20px 30px;
+  font-family: var(--police1);
+  font-weight: 600;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.ProfilMessageContentSmsHome {
+  background-color: white;
+  max-width: 700px;
+  width: fit-content;
+  border-radius: 20px 20px 0 20px;
+  padding: 10px 10px;
+  border: 1px solid var(--bg-ter);
+  color: var(--text);
+  position: relative;
+}
+.ProfilMessageContentSmsAway {
+  max-width: 700px;
+  width: fit-content;
+  background-color: var(--text);
+  color: white;
+  border: 1px solid var(--bg-ter);
+  margin-left: auto;
+  border-radius: 20px 20px 20px 0;
+  padding: 10px 10px;
+  position: relative;
+}
+.ProfilMessageContentSmsHome span,
+.ProfilMessageContentSmsAway span {
+  color: green;
+  font-size: 11px;
+  position: absolute;
+  right: 10px;
+  bottom: 2px;
+}
+.ProfilMessageContentSmsHour {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: white;
+}
+.ProfilMessageContentSmsHour::after,
+.ProfilMessageContentSmsHour::before {
+  content: "";
+  flex: 1;
+  background-image: url("../assets/icone/etoile.png");
+  height: 48px;
+  width: 48px;
+  background-repeat: repeat-x;
+  background-position: center;
+  background-size: 11px;
+}
+.ProfilMessageContentSmsHour p {
+  margin: 0;
+  white-space: nowrap;
+}
+.ProfilMessageContentButton {
+  width: 100%;
+  height: 150px;
+  background-color: var(--bg-ter);
+  border-radius: 0px 0px 20px 20px;
+  display: flex;
+  position: relative;
+}
+.ProfilMessageContentButtonArea {
+  width: 70%;
+  height: 100%;
+  overflow: hidden;
+}
+.ProfilMessageContentButtonArea textarea {
+  width: calc(100% - 40px);
+  height: 130px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  outline: none;
+  border: none;
+  padding: 10px 20px;
+  resize: none;
+  font-family: var(--police1);
+}
+.ProfilMessageContentButtonOption {
+  width: 20%;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.ProfilMessageContentButtonSend {
+  width: 10%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-ter);
+  cursor: pointer;
+}
+.ProfilMessageContentBtn {
+  position: relative;
+  font-family: var(--police1);
+  font-weight: 700;
+}
+.ProfilMessageContentBtn p {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -10px;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+.ProfilMessageContentBtn img {
+  cursor: pointer;
+}
+.ProfilMessageContentBtn img:hover ~ p {
+  top: -30px;
+  opacity: 1;
+}
+.ProfilMessageContentButton .emoji {
+  position: absolute;
+  bottom: 150px;
+}
+.ProfilMessageContentSmsHome img {
+  width: 200px;
+  height: 150px;
+  object-fit: scale-down;
+  padding-bottom: 10px;
+  cursor: pointer;
+}
+.dialog-media-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dialog-image {
+  width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  display: block;
+}
+
+.dialog-download-btn {
+  align-self: center;
+  padding: 8px 16px;
+
+  text-decoration: none;
+  color: inherit;
+  font-size: 14px;
+}
+.photoProfilCard {
+  position: relative;
+  display: flex;
+  width: 150px;
+  height: 150px;
+  background-color: transparent;
+  margin: auto;
+  border-radius: 10px;
+  border: 2px solid var(--bg-ter);
+}
+.photoProfilCard #MainPicture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.photoProfilCard #MainControl {
+  position: absolute;
+  right: -30px;
+  cursor: pointer;
+}
+.avatarsPictureItem {
+  display: grid;
+  gap: 5px 15px;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+}
+.avatarsPicture img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--bg-ter);
+  cursor: pointer;
+  transition: all 0.6s ease;
+}
+.avatarsPicture img:hover {
+  scale: 1.3;
+}
+/*reservaion*/
+.ResevationCard img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.ResevationCard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  width: 100%;
+  gap: 15px 50px;
+}
+
+.ReservationCardElement {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+}
+.ReservationCardElement p {
+  margin: 0;
+}
+.ReservationHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  width: 100%;
+}
+.glowReservtion {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  color: white;
+}
+
+.paginationheader {
+  border: 1px solid var(--bg-ter);
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.paginationheader.active {
+  position: relative;
+  background-color: #1a1a2e;
+  color: #e8c97e;
+  border: 1px solid #e8c97e;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.2s ease;
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+}
+.paginationheader.active::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(232, 201, 126, 0.45) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  z-index: -1;
+  animation: shimmerSweep 3.5s ease-in-out infinite;
+}
+
+@keyframes shimmerSweep {
+  0% {
+    left: -150%;
+  }
+  60% {
+    left: 150%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+.dialogreserv img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--bg-ter);
+}
+.dialogreserv p {
+  margin: 0;
+  font-family: var(--police1);
+  font-weight: bold;
+}
+.dialogreserv {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+.dialogreserv p span {
+  color: green;
+}
+.ReservationCardElement span {
+  color: #e8c97e;
+}
+
+.AvisUser textarea {
+  width: 450px;
+  height: 180px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  outline: 2px solid #e8c97e;
+  padding: 10px 20px;
+  resize: none;
+  font-family: var(--police1);
+  border-radius: 10px;
+  border: none;
+}
+.Rating {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.CommentUser {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-top: 10px;
+}

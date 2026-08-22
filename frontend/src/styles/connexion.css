@@ -1,0 +1,108 @@
+.ConnexionHome {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 5px 5px 10px white;
+  width: 100%;
+  max-width: 800px;
+  height: fit-content;
+  margin: auto;
+  border-radius: 10px;
+  padding: 10px 0;
+}
+.ConnexionHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg);
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+}
+.ConnexionHomeLogo {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+.ConnexionHomeLogo img {
+  width: 300px;
+}
+#errortext {
+  text-align: center;
+  color: red;
+}
+.ConnexionHomeForm {
+  padding: 0 5%;
+  width: 90%;
+}
+.ConnexionHomeFormCase input {
+  width: calc(100% - 30px);
+  height: 50px;
+  border-radius: 10px;
+  outline: none;
+  border: none;
+  padding: 0 15px;
+}
+.ConnexionBtn {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+.ConnexionBtnReset {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+}
+.ConnexionHomeFormCasePassword {
+  display: flex;
+  width: 100%;
+  position: relative;
+}
+.FormEyePassword {
+  position: absolute;
+  display: flex;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.FormEyePassword img {
+  cursor: pointer;
+}
+.ConnexionHomeLink {
+  text-align: center;
+  color: white;
+}
+.ConnexionHomeLink a {
+  color: goldenrod;
+}
+.ConnexionHomeForm form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.ConnexionHomeFormCase p {
+  margin: 5px 0;
+  color: white;
+}
+.RestrictionCase {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.RestrictionCase img {
+  height: 30px;
+  width: 30px;
+}
+.RestrictionCase p {
+  margin: 0;
+}
+.CodeSms {
+  text-align: center;
+  color: var(--warning) !important;
+}
+.horloge {
+  text-align: center;
+  color: var(--warning) !important;
+  font-size: 24px;
+  padding: 15px 0;
+}

@@ -1,0 +1,241 @@
+.CalendarHeader {
+  flex: 1;
+  padding: 20px 5%;
+  width: 90%;
+
+  min-height: 0; /* empêche le flex item de garder sa taille "auto" par défaut */
+  display: flex; /* pour que le Calendar (height:100%) ait une référence fiable */
+  flex-direction: column;
+  position: relative;
+}
+/* La gouttière des heures */
+.rbc-time-gutter {
+  background-color: var(--text);
+  color: #e8c97e;
+}
+
+.rbc-time-gutter .rbc-timeslot-group {
+  border-color: #333;
+}
+
+.rbc-time-gutter .rbc-label {
+  color: #e8c97e;
+  font-weight: 500;
+}
+
+/* La gouttière des jours */
+.rbc-month-view .rbc-header {
+  background-color: var(--text);
+  color: #e8c97e;
+  font-weight: 500;
+}
+
+.rbc-month-view .rbc-date-cell {
+  color: #e8c97e;
+  font-weight: 500;
+}
+.rbc-month-view .rbc-date-cell.rbc-off-range.rbc-now {
+  color: #e8c97e;
+  font-weight: 500;
+}
+.rbc-month-view .rbc-date-cell.rbc-off-range.rbc-now:after {
+  color: #e8c97e;
+  font-weight: 500;
+}
+.rbc-month-view .rbc-date-cell.rbc-off-range {
+  color: #e8c97e;
+  font-weight: 500;
+}
+.rbc-month-view .rbc-date-cell.rbc-off-range.rbc-now {
+  color: #e8c97e;
+  font-weight: 500;
+}
+.rbc-month-view .rbc-date-cell.rbc-off-range.rbc-now:after {
+  color: #e8c97e;
+  font-weight: 500;
+}
+.rbc-month-view .rbc-date-cell.rbc-now {
+  color: #e8c97e;
+  font-weight: 500;
+}
+.rbc-month-view .rbc-date-cell.rbc-now:after {
+  color: #e8c97e;
+  font-weight: 500;
+}
+.rbc-month-view .rbc-date-cell {
+  color: #e8c97e;
+  font-weight: 500;
+}
+.rbc-month-view .rbc-date-cell.rbc-now {
+  color: #e8c97e;
+  font-weight: 500;
+}
+.rbc-month-view .rbc-date-cell.rbc-now:after {
+  color: #e8c97e;
+  font-weight: 500;
+}
+
+.rbc-month-view .rbc-date-cell.rbc-now {
+  color: #e8c97e;
+  font-weight: 500;
+}
+
+.rbc-month-view .rbc-date-cell.rbc-off-range {
+  color: #e8c97e;
+  font-weight: 500;
+}
+
+.rbc-month-view .rbc-date-cell.rbc-off-range.rbc-now {
+  color: #e8c97e;
+  font-weight: 500;
+}
+
+.rbc-month-view .rbc-date-cell.rbc-off-range.rbc-now:after {
+  color: #e8c97e;
+  font-weight: 500;
+}
+
+.rbc-month-view .rbc-date-cell.rbc-off-range {
+  color: #e8c97e;
+  font-weight: 500;
+}
+
+.rbc-month-view .rbc-date-cell.rbc-off-range.rbc-now {
+  color: #e8c97e;
+  font-weight: 500;
+}
+.rbc-day-bg {
+  cursor: pointer;
+}
+.rbc-month-view .rbc-date-cell.rbc-off-range.rbc-now:after {
+  color: #e8c97e;
+  font-weight: 500;
+}
+
+.rbc-month-view .rbc-date-cell.rbc-now {
+  color: #e8c97e;
+  font-weight: 500;
+}
+
+.rbc-month-view .rbc-date-cell.rbc-now:after {
+  color: #e8c97e;
+  font-weight: 500;
+}
+
+.rbc-month-view .rbc-date-cell {
+  color: #e8c97e;
+  font-weight: 500;
+}
+
+.rbc-month-view .rbc-date-cell.rbc-now {
+  color: #e8c97e;
+  font-weight: 500;
+}
+
+.rbc-month-view .rbc-date-cell.rbc-now:after {
+  color: #e8c97e;
+  font-weight: 500;
+}
+.customCalendar {
+  background-color: var(--text);
+  color: #e8c97e;
+  width: calc(100% -60px);
+  height: 100%;
+  padding: 20px 30px;
+  font-family: var(--police1);
+  scrollbar-width: thin !important;
+}
+.customCalendar input {
+  font-family: var(--police1);
+}
+#alert-dialog-title {
+  text-align: center;
+}
+#CalendarFormCardText {
+  width: calc(100% - 40px);
+  height: 50px;
+  outline: 2px solid #e8c97e;
+  padding: 0 20px;
+}
+#CalendarFormCardArea {
+  width: calc(100% - 40px);
+  height: 100px;
+  outline: 2px solid #e8c97e;
+  padding: 10px 20px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  resize: none;
+}
+#CalendarFormCardHour {
+  outline: 2px solid #e8c97e;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.CalendarFormCardSelectEvent {
+  background-color: #e8c97e;
+  border: 2px solid white;
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+  border-radius: 10px;
+  padding: 0 10px;
+}
+.CalendarFormCardSelectEvent p {
+  margin: 0;
+  padding: 10px 0;
+}
+.CalendarFormCardSelectEvent:hover,
+.CalendarFormCardSelectEvent.active {
+  cursor: pointer;
+  background-color: #1a1a2e;
+  border-radius: 10px;
+  border: 2px solid var(--bg-ter);
+  color: var(--bg-ter);
+  box-shadow: 0 0 8px rgba(232, 201, 126, 0.25);
+  cursor: pointer;
+}
+.CalendarFormCardSelect {
+  border: 2px solid #e8c97e;
+  padding: 5px 20px;
+  background-color: white;
+  color: black;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ButonClendar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  margin-top: 30px;
+}
+.CalendarFormCardPicure {
+  display: flex;
+  flex-direction: column;
+}
+.CalendarFormCardPicure img {
+  width: 300px;
+  height: 300px;
+  object-fit: scale-down;
+  border: 1px solid #e8c97e;
+}
+.CouleurCard {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 30px;
+}
+.CouleurEvent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.CouleurEvent p {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.borderCard.active {
+  border: 2px solid white;
+}

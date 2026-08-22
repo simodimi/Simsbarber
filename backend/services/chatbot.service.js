@@ -1,0 +1,138 @@
+const { qdrant, COLLECTION_NAME } = require("../config/qdrant");
+const { genererReponse } = require("../config/ollama");
+const { embed, VECTOR_SIZE } = require("./embeddings.service");
+const { Prestation, Category, TeamMenber } = require("../models");
+
+const HORAIRES =
+  "Le salon est ouvert du lundi au samedi de 9h à 19h, fermé le dimanche.";
+
+// CORRIGÉ : avant, on essayait de "vider" la collection avec
+// qdrant.delete(COLLECTION_NAME, { filter: {} }), qui ne supprime pas
+// fiablement TOUS les points existants (un filtre vide n'est pas
+// garanti d'être interprété comme "tout sélectionner" selon les
+// versions de l'API Qdrant, et l'erreur était avalée silencieusement par
+// le .catch(() => {})). Résultat concret : d'anciennes entrées (vos 12
+// doublons de test) restaient dans la collection, mélangées aux nouvelles,
+// et polluaient les résultats de recherche.
+//
+// Nouvelle approche, plus radicale mais fiable à 100% : on SUPPRIME la
+// collection entière puis on la RECRÉE à chaque réindexation. Plus de
+// risque de résidus. Le petit coût : la collection est indisponible
+// pendant les quelques centaines de ms que prend l'opération — largement
+// acceptable pour un usage admin ponctuel (pas appelé à chaque requête
+// utilisateur).
+async function recreerCollection() {
+  await qdrant.deleteCollection(COLLECTION_NAME).catch(() => {
+    // ignore l'erreur si la collection n'existait simplement pas encore
+  });
+  await qdrant.createCollection(COLLECTION_NAME, {
+    vectors: { size: VECTOR_SIZE, distance: "Cosine" },
+  });
+}
+
+async function reindexerCatalogue() {
+  await recreerCollection();
+
+  const prestations = await Prestation.findAll({
+    include: [{ model: Category, as: "category" }],
+  });
+  const membres = await TeamMenber.findAll();
+
+  const points = [];
+  let pointId = 1;
+
+  for (const p of prestations) {
+    const texte = [
+      `Prestation : ${p.nom}`,
+      `Catégorie : ${p.category?.nom || ""}`,
+      p.descriptionCourte,
+      p.descriptionComplete,
+      `Prix : ${p.prix} euros`,
+      `Durée : ${p.duree} minutes`,
+      p.produitsUtilises
+        ? `Produits utilisés : ${p.produitsUtilises.join(", ")}`
+        : "",
+    ]
+      .filter(Boolean)
+      .join(". ");
+
+    points.push({
+      id: pointId++,
+      vector: await embed(texte),
+      payload: { type: "prestation", id: p.id, texte },
+    });
+  }
+
+  for (const m of membres) {
+    const texte = [
+      `Membre de l'équipe : ${m.prenom} ${m.nom}`,
+      `Titre : ${m.titre}`,
+      m.description,
+      `Expérience : ${m.experience}`,
+      `Spécialités : ${(m.categories || []).join(", ")}`,
+    ]
+      .filter(Boolean)
+      .join(". ");
+
+    points.push({
+      id: pointId++,
+      vector: await embed(texte),
+      payload: { type: "team", id: m.id, texte },
+    });
+  }
+
+  const INFOS_STATIQUES = [
+    "Le salon est ouvert du lundi au samedi de 9h à 19h, fermé le dimanche.",
+    "Pour réserver, le client se connecte à son compte, choisit une prestation dans le catalogue, puis sélectionne une date et une heure disponible dans le calendrier.",
+    "Une réservation peut être annulée par l'administrateur si besoin ; le client en est alors notifié.",
+    "Pour toute question, un client peut envoyer un message directement au salon via la messagerie de l'application.",
+    "Le paiement se fait sur place, au salon, au moment de la prestation.",
+  ];
+
+  for (const texte of INFOS_STATIQUES) {
+    points.push({
+      id: pointId++,
+      vector: await embed(texte),
+      payload: {
+        type: "info",
+        texte,
+      },
+    });
+  }
+
+  if (points.length > 0) {
+    await qdrant.upsert(COLLECTION_NAME, { points });
+  }
+
+  return { indexes: points.length };
+}
+
+async function rechercherContexte(question, topK = 5) {
+  const vector = await embed(question);
+  const resultats = await qdrant.search(COLLECTION_NAME, {
+    vector,
+    limit: topK,
+  });
+  return resultats.map((r) => r.payload.texte);
+}
+
+async function repondre(message) {
+  const contextes = await rechercherContexte(message);
+
+  const prompt = `Tu es l'assistant virtuel du salon de coiffure/barbier Sim'sBarber.
+Réponds à la question du client UNIQUEMENT à partir des informations ci-dessous.
+Si l'information demandée n'y figure pas, réponds que tu ne sais pas et invite
+le client à contacter directement le salon via la messagerie.
+Reste bref, poli et professionnel.
+
+Informations disponibles :
+${contextes.map((c, i) => `${i + 1}. ${c}`).join("\n")}
+
+Question du client : ${message}
+
+Réponse :`;
+
+  return genererReponse(prompt);
+}
+
+module.exports = { reindexerCatalogue, repondre };

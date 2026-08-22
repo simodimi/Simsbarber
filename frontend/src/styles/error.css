@@ -1,0 +1,68 @@
+.ErrorHome {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg);
+}
+.splineIcon {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.Errortext h1 {
+  font-size: 150px;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-family: var(--police1);
+  text-shadow: 5px 5px 5px var(--bg-ter);
+
+  text-decoration-color: var(--bg-ter);
+}
+.Errortexts {
+  display: flex;
+  position: absolute;
+  text-align: center;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 100%;
+}
+.Errortexts h1 {
+  font-size: 100px;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-family: var(--police1);
+  text-shadow: 5px 5px 5px var(--bg-ter);
+  text-decoration-color: var(--bg-ter);
+  margin: 0;
+}
+.SplineCartoon {
+  z-index: 1;
+}
+.ErrorButton {
+  position: absolute;
+  top: 40px;
+  left: 50px;
+  cursor: pointer;
+  z-index: 10;
+}
+.btnConnect {
+  position: absolute;
+  left: 50%;
+  bottom: 20%;
+  transform: translate(-50%, 0);
+  z-index: 1000;
+}
