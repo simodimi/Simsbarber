@@ -13,7 +13,7 @@ import Button from "../ui/Button";
 import SiderbarAdmin from "../components/SiderbarAdmin";
 import connect from "../services/Util";
 import { connectSocket } from "../services/socket";
-
+import { useNotification } from "../services/NotificationContext";
 interface bgprops {
   visualsms: null | number;
   avissms: null | number;
@@ -25,6 +25,9 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
     nom: string;
     photo: string;
     unread: number;
+    lastMessageAt: number | null;
+    lastMessageContent: string | null;
+    lastMessageHasImage: boolean;
   }
 
   interface dataSms {
@@ -56,7 +59,7 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
   // Dialog pour les images
   const [open, setopen] = useState(false);
   const [imageDialog, setimageDialog] = useState<dataSms | null>(null);
-
+  const { refreshUnread } = useNotification();
   // Gestion des emojis
   useEffect(() => {
     const emoji = (e: MouseEvent) => {
@@ -73,16 +76,45 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
   // Récupération des conversations
   const fetchConversations = async () => {
     try {
-      const res = await connect.get("/api/messages/admin/conversations");
-      const reels = res.data.map((c: any) => ({
+      const [conversationsRes, broadcastsRes] = await Promise.all([
+        connect.get("/api/messages/admin/conversations"),
+        connect.get("/api/messages/admin/broadcast"),
+      ]);
+
+      const reels = conversationsRes.data.map((c: any) => ({
         id: c.userId,
         nom: c.nameUser,
-        photo: c.photoUser ? `http://localhost:5000/${c.photoUser}` : img2,
+        photo: c.photoUser ? `http://localhost:5000${c.photoUser}` : img2,
         unread: c.unreadCount,
+        lastMessageAt: c.lastMessageAt
+          ? new Date(c.lastMessageAt).getTime()
+          : null,
+        lastMessageContent: c.lastMessageContent,
+        lastMessageHasImage: c.lastMessageHasImage,
       }));
 
+      // Récupération du dernier message envoyé à tous
+      const broadcasts = broadcastsRes.data || [];
+
+      const lastBroadcast =
+        broadcasts.length > 0 ? broadcasts[broadcasts.length - 1] : null;
+
       const usersWithAll = [
-        { id: -1, nom: "📢 Tous les utilisateurs", photo: img, unread: 0 },
+        {
+          id: -1,
+          nom: "📢 Tous les utilisateurs",
+          photo: img,
+          unread: 0,
+
+          lastMessageAt: lastBroadcast
+            ? new Date(lastBroadcast.createdAt).getTime()
+            : null,
+
+          lastMessageContent: lastBroadcast?.content || null,
+
+          lastMessageHasImage: !!lastBroadcast?.imageUrl,
+        },
+
         ...reels,
       ];
 
@@ -90,21 +122,25 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
       setfilterUser(usersWithAll);
     } catch (error) {
       console.error("Erreur lors du chargement des conversations:", error);
+
       toast.error("Erreur lors du chargement des contacts");
     }
   };
-
   useEffect(() => {
     fetchConversations();
   }, []);
 
   // Récupération des messages d'un utilisateur
   useEffect(() => {
-    if (userSelect === null || userSelect === -1) return;
+    if (userSelect === null) return; // on retire l'exclusion de -1
 
     const fetchMessages = async () => {
       try {
-        const res = await connect.get(`/api/messages/admin/${userSelect}`);
+        const url =
+          userSelect === -1
+            ? "/api/messages/admin/broadcast"
+            : `/api/messages/admin/${userSelect}`;
+        const res = await connect.get(url);
         const adapte = res.data.map((m: any) => ({
           id: String(m.id),
           message: m.content || "",
@@ -112,22 +148,23 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
             hour: "2-digit",
             minute: "2-digit",
           }),
-          image: m.imageUrl ? `http://localhost:5000/${m.imageUrl}` : undefined,
+          image: m.imageUrl ? `http://localhost:5000${m.imageUrl}` : undefined, // sans le / en trop
           sender: m.senderType === "ADMIN" ? "home" : "away",
           timestamp: new Date(m.createdAt).getTime(),
         }));
         setconversation((prev) => ({ ...prev, [userSelect]: adapte }));
 
-        // Mettre à jour le compteur de messages non lus
-        setfilterUser((prev) =>
-          prev.map((u) => (u.id === userSelect ? { ...u, unread: 0 } : u)),
-        );
+        if (userSelect !== -1) {
+          setfilterUser((prev) =>
+            prev.map((u) => (u.id === userSelect ? { ...u, unread: 0 } : u)),
+          );
+          refreshUnread();
+        }
       } catch (error) {
         console.error("Erreur lors du chargement des messages:", error);
         toast.error("Erreur lors du chargement des messages");
       }
     };
-
     fetchMessages();
   }, [userSelect]);
 
@@ -181,7 +218,7 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
         // Rafraîchir la liste des conversations
         await fetchConversations();
       } else {
-        // Envoi à un utilisateur spécifique
+        /* // Envoi à un utilisateur spécifique
         await connect.post(`/api/messages/admin/${userSelect}`, formData);
 
         // Récupérer les messages mis à jour
@@ -193,11 +230,33 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
             hour: "2-digit",
             minute: "2-digit",
           }),
-          image: m.imageUrl ? `http://localhost:5000/${m.imageUrl}` : undefined,
+          image: m.imageUrl ? `http://localhost:5000${m.imageUrl}` : undefined,
+          sender: m.senderType === "ADMIN" ? "home" : "away",
+          timestamp: new Date(m.createdAt).getTime(),
+        }));
+        setconversation((prev) => ({ ...prev, [userSelect]: adapte }));*/
+        const url =
+          userSelect === -1
+            ? "/api/messages/admin/broadcast"
+            : `/api/messages/admin/${userSelect}`;
+
+        await connect.post(url, formData);
+
+        const res = await connect.get(url); // même URL pour relire, y compris broadcast
+        const adapte = res.data.map((m: any) => ({
+          id: String(m.id),
+          message: m.content || "",
+          hour: new Date(m.createdAt).toLocaleTimeString("fr-FR", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          image: m.imageUrl ? `http://localhost:5000${m.imageUrl}` : undefined,
           sender: m.senderType === "ADMIN" ? "home" : "away",
           timestamp: new Date(m.createdAt).getTime(),
         }));
         setconversation((prev) => ({ ...prev, [userSelect]: adapte }));
+
+        await fetchConversations();
       }
     } catch (error) {
       console.error("Erreur lors de l'envoi:", error);
@@ -232,11 +291,12 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
             hour: "2-digit",
             minute: "2-digit",
           }),
-          image: m.imageUrl ? `http://localhost:5000/${m.imageUrl}` : undefined,
+          image: m.imageUrl ? `http://localhost:5000${m.imageUrl}` : undefined,
           sender: m.senderType === "ADMIN" ? "home" : "away",
           timestamp: new Date(m.createdAt).getTime(),
         }));
         setconversation((prev) => ({ ...prev, [userSelect]: adapte }));
+        await fetchConversations();
       } else {
         toast.success("📷 Image envoyée à tous les clients");
         await fetchConversations();
@@ -253,7 +313,7 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
   };
 
   // Socket pour les nouveaux messages
-  useEffect(() => {
+  /* useEffect(() => {
     const socket = connectSocket();
     socket.on("message:new", () => {
       fetchConversations();
@@ -268,7 +328,7 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
               minute: "2-digit",
             }),
             image: m.imageUrl
-              ? `http://localhost:5000/${m.imageUrl}`
+              ? `http://localhost:5000${m.imageUrl}`
               : undefined,
             sender: m.senderType === "ADMIN" ? "home" : "away",
             timestamp: new Date(m.createdAt).getTime(),
@@ -281,8 +341,48 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
     return () => {
       socket.off("message:new");
     };
-  }, [userSelect]);
+  }, [userSelect]);*/
+  useEffect(() => {
+    const socket = connectSocket();
 
+    const syncSelected = () => {
+      if (userSelect === null) return;
+      const url =
+        userSelect === -1
+          ? "/api/messages/admin/broadcast"
+          : `/api/messages/admin/${userSelect}`;
+      connect.get(url).then((res) => {
+        const adapte = res.data.map((m: any) => ({
+          id: String(m.id),
+          message: m.content || "",
+          hour: new Date(m.createdAt).toLocaleTimeString("fr-FR", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          image: m.imageUrl ? `http://localhost:5000${m.imageUrl}` : undefined,
+          sender: m.senderType === "ADMIN" ? "home" : "away",
+          timestamp: new Date(m.createdAt).getTime(),
+        }));
+        setconversation((prev) => ({ ...prev, [userSelect]: adapte }));
+        refreshUnread();
+      });
+    };
+
+    const onEvent = () => {
+      fetchConversations();
+      syncSelected();
+    };
+
+    socket.on("connect", onEvent);
+    socket.on("message:new", onEvent);
+    socket.on("message:broadcast", onEvent);
+
+    return () => {
+      socket.off("connect", onEvent);
+      socket.off("message:new", onEvent);
+      socket.off("message:broadcast", onEvent);
+    };
+  }, [userSelect]);
   // Navigation depuis les notifications
   useEffect(() => {
     const id = visualsms ?? avissms;
@@ -325,13 +425,13 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
 
   // Données actuelles
   const messageCurrent = userSelect ? conversation[userSelect] || [] : [];
-  const userOrder = [...filterUser].sort((a, b) => {
+  /*const userOrder = [...filterUser].sort((a, b) => {
     const A = conversation[a.id]?.[conversation[a.id].length - 1];
     const B = conversation[b.id]?.[conversation[b.id].length - 1];
     const LastA = A ? A.timestamp : 0;
     const LastB = B ? B.timestamp : 0;
     return LastB - LastA;
-  });
+  });*/
 
   return (
     <div className="AccueilHeaderAdmin">
@@ -353,7 +453,7 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
             />
           </div>
           {filterUser.length > 0 ? (
-            <div className="ProfilMessageContactCard">
+            /* <div className="ProfilMessageContactCard">
               {userOrder.map((p) => {
                 const Last =
                   conversation[p.id]?.[conversation[p.id].length - 1];
@@ -380,6 +480,51 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
                             : Last.message.length > 20
                               ? Last.message.slice(0, 20) + "..."
                               : Last.message}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>*/
+            <div className="ProfilMessageContactCard">
+              {filterUser.map((p) => {
+                return (
+                  <div
+                    className={`ProfilMessageContactCardPerson ${userSelect === p.id ? "active" : ""}`}
+                    onClick={() => {
+                      setuserSelect(p.id);
+                      setvisualuser(p);
+                    }}
+                    key={p.id}
+                  >
+                    <img src={p.photo} alt="" />
+                    {p.unread > 0 && (
+                      <span
+                        style={{
+                          position: "absolute",
+                          top: "5px",
+                          right: "5px",
+                          backgroundColor: "green",
+                          color: "white",
+                          borderRadius: "50%",
+                          padding: "2px 6px",
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {p.unread}
+                      </span>
+                    )}
+                    <div className="PrfilName">
+                      <p>{p.nom}</p>
+                      <p style={{ fontSize: "10px" }}>
+                        {!p.lastMessageAt
+                          ? "Aucun message..."
+                          : p.lastMessageHasImage
+                            ? "📷 Média"
+                            : (p.lastMessageContent?.length ?? 0) > 20
+                              ? p.lastMessageContent!.slice(0, 20) + "..."
+                              : p.lastMessageContent}
                       </p>
                     </div>
                   </div>

@@ -53,5 +53,15 @@ async function supprimer(id) {
   if (!prestation) throw new ErreurMetier("Prestation introuvable", 404);
   await prestation.destroy();
 }
-
-module.exports = { lister, getBySlug, creer, modifier, supprimer };
+async function getGalerieActuelle(id) {
+  const prestation = await Prestation.findByPk(id);
+  return prestation?.galerie || ["", "", ""];
+}
+module.exports = {
+  lister,
+  getBySlug,
+  creer,
+  modifier,
+  supprimer,
+  getGalerieActuelle,
+};

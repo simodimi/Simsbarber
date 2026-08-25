@@ -402,6 +402,7 @@ const Planning = () => {
     });
 
     setOpen(true);
+    console.log(selectedslot);
   };
 
   //annulation (pas suppression définitive) — voir handleDeletes

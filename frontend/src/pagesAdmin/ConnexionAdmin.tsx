@@ -52,7 +52,7 @@ const ConnexionAdmin = () => {
     }
     try {
       await login(dataform.emailAdmin, dataform.passwordAdmin);
-      navigate(from || "/admin/");
+      navigate(from || "/admin/home");
       settextewrite("");
       setdataform({ ...dataform, emailAdmin: "", passwordAdmin: "" });
     } catch (error) {

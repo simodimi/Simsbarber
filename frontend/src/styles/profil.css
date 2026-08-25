@@ -330,8 +330,8 @@
   font-family: var(--police1);
   font-weight: 600;
   background-repeat: no-repeat;
-  background-position: center;
   background-size: cover;
+  background-position: center;
 }
 
 .ProfilMessageContentSmsHome {
@@ -450,7 +450,8 @@
   position: absolute;
   bottom: 150px;
 }
-.ProfilMessageContentSmsHome img {
+.ProfilMessageContentSmsHome img,
+.ProfilMessageContentSmsAway img {
   width: 200px;
   height: 150px;
   object-fit: scale-down;

@@ -149,6 +149,7 @@ const CategoriePrestationSelect = () => {
   //reservation
   const handleReservation = () => {
     navigate("/calendrier", { state: { prestation } });
+    toast("veuillez choisir un jour du calendrier");
   };
   return (
     <div className="AccueilHeader">
@@ -229,38 +230,40 @@ const CategoriePrestationSelect = () => {
             </Button>
           </div>
         </div>
-        <div className="AvisClientCoupe">
-          <div className="AccueilPrestationsTitle">
-            <h2>
-              Avis des clients sur {/*{categoryId}s en*/} {prestation?.nom}
-            </h2>
-          </div>
-          <div className="AvisCard">
-            <div className="AvisCardHeader">
-              {newavis.map((p) => (
-                <div className="AvisCardHeaderList" key={p.id}>
-                  <img src={p.photos} alt="" />
-                  <p>{p.name}</p>
-                  <p>{p.message}</p>
-                  <p>{"⭐".repeat(p.rating)}</p>
-                </div>
-              ))}
+        {avisPrestation.length > 0 && (
+          <div className="AvisClientCoupe">
+            <div className="AccueilPrestationsTitle">
+              <h2>
+                Avis des clients sur {/*{categoryId}s en*/} {prestation?.nom}
+              </h2>
             </div>
-            <div className="AvisCardFunction">
-              {avisindex > 0 && (
-                <Button className="error" onClick={handlePreviousAvis}>
-                  Précedent
-                </Button>
-              )}
+            <div className="AvisCard">
+              <div className="AvisCardHeader">
+                {newavis.map((p) => (
+                  <div className="AvisCardHeaderList" key={p.id}>
+                    <img src={p.photos} alt="" />
+                    <p>{p.name}</p>
+                    <p>{p.message}</p>
+                    <p>{"⭐".repeat(p.rating)}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="AvisCardFunction">
+                {avisindex > 0 && (
+                  <Button className="error" onClick={handlePreviousAvis}>
+                    Précedent
+                  </Button>
+                )}
 
-              {avisindex + 3 < avisPrestation.length && (
-                <Button className="succes" onClick={handleNextAvis}>
-                  Suivant
-                </Button>
-              )}
+                {avisindex + 3 < avisPrestation.length && (
+                  <Button className="succes" onClick={handleNextAvis}>
+                    Suivant
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

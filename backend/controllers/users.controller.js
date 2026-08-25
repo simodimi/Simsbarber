@@ -22,7 +22,7 @@ exports.uploadPhoto = async (req, res, next) => {
   try {
     if (!req.file)
       return res.status(400).json({ error: "Aucun fichier envoyé" });
-    const photoUrl = `/uploads/${req.file.filename}`;
+    const photoUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
     const user = await usersService.updatePhoto(req.user.sub, photoUrl);
     res.json(user);
   } catch (err) {
@@ -30,6 +30,17 @@ exports.uploadPhoto = async (req, res, next) => {
   }
 };
 
+exports.uploadChatBackground = async (req, res, next) => {
+  try {
+    if (!req.file)
+      return res.status(400).json({ error: "Aucun fichier envoyé" });
+    const url = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+    const user = await usersService.updateChatBackground(req.user.sub, url);
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+};
 exports.updateChatBackground = async (req, res, next) => {
   try {
     const user = await usersService.updateChatBackground(

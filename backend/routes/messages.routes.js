@@ -22,18 +22,22 @@ router.get(
   controller.adminConversations,
 );
 router.get(
+  "/admin/conversations",
+  authUser,
+  authAdmin,
+  controller.adminConversations,
+);
+router.get(
+  "/admin/broadcast",
+  authUser,
+  authAdmin,
+  controller.adminBroadcastHistory,
+); // nouveau, avant :userId
+router.get(
   "/admin/:userId",
   authUser,
   authAdmin,
   controller.adminMessagesForUser,
-);
-router.post(
-  "/admin/:userId",
-  authUser,
-  authAdmin,
-  upload.single("image"),
-  validate(sendMessageSchema),
-  controller.adminSend,
 );
 router.post(
   "/admin/broadcast",
@@ -42,6 +46,14 @@ router.post(
   upload.single("image"),
   validate(sendMessageSchema),
   controller.broadcast,
+);
+router.post(
+  "/admin/:userId",
+  authUser,
+  authAdmin,
+  upload.single("image"),
+  validate(sendMessageSchema),
+  controller.adminSend,
 );
 
 module.exports = router;

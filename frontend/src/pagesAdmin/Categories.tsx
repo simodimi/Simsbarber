@@ -53,6 +53,12 @@ const Categories = () => {
   const refphoto3 = useRef<HTMLInputElement | null>(null);
   const [lengthcategorie, setlengthcategorie] = useState<number>(0);
   const [lengthdescribe, setlengthdescribe] = useState<number>(0);
+  const [removeImage, setRemoveImage] = useState(false);
+  const [removeGalerie, setRemoveGalerie] = useState({
+    photo1: false,
+    photo2: false,
+    photo3: false,
+  });
   const [lengthdescriptionComplete, setlengthdescriptionComplete] =
     useState<number>(0);
   const [dataForm, setdataForm] = useState<sousCategories>({
@@ -165,24 +171,31 @@ const Categories = () => {
       setselectedImageFile(file);
       reader.onloadend = () => setimageHeader(reader.result as string);
       reader.readAsDataURL(file);
+      setRemoveImage(false);
     }
+    // pour photo1 :
     if (name === "photo1") {
       setselectedGalerieFiles((prev) => ({ ...prev, photo1: file }));
       reader.onloadend = () =>
         setphoto((prev) => ({ ...prev, photo1: reader.result as string }));
       reader.readAsDataURL(file);
+      setRemoveGalerie((prev) => ({ ...prev, photo1: false }));
     }
+    // pour photo2 :
     if (name === "photo2") {
       setselectedGalerieFiles((prev) => ({ ...prev, photo2: file }));
       reader.onloadend = () =>
         setphoto((prev) => ({ ...prev, photo2: reader.result as string }));
       reader.readAsDataURL(file);
+      setRemoveGalerie((prev) => ({ ...prev, photo2: false }));
     }
+    // pour photo3 :
     if (name === "photo3") {
       setselectedGalerieFiles((prev) => ({ ...prev, photo3: file }));
       reader.onloadend = () =>
         setphoto((prev) => ({ ...prev, photo3: reader.result as string }));
       reader.readAsDataURL(file);
+      setRemoveGalerie((prev) => ({ ...prev, photo3: false }));
     }
   };
   const resetForm = () => {
@@ -206,6 +219,8 @@ const Categories = () => {
     setlengthcategorie(0);
     setlengthdescribe(0);
     setlengthdescriptionComplete(0);
+    setRemoveImage(false);
+    setRemoveGalerie({ photo1: false, photo2: false, photo3: false });
   };
   const handlesubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -235,12 +250,22 @@ const Categories = () => {
     formData.append("ancienPrix", String(dataForm.ancienPrix || 0));
     formData.append("produitsUtilises", dataForm.produitsUtilises);
     if (selectedImageFile) formData.append("image", selectedImageFile);
+
     if (selectedGalerieFiles.photo1)
-      formData.append("galerie", selectedGalerieFiles.photo1);
+      formData.append("galerie1", selectedGalerieFiles.photo1);
     if (selectedGalerieFiles.photo2)
-      formData.append("galerie", selectedGalerieFiles.photo2);
+      formData.append("galerie2", selectedGalerieFiles.photo2);
     if (selectedGalerieFiles.photo3)
-      formData.append("galerie", selectedGalerieFiles.photo3);
+      formData.append("galerie3", selectedGalerieFiles.photo3);
+
+    if (removeImage && !selectedImageFile)
+      formData.append("removeImage", "true");
+    if (removeGalerie.photo1 && !selectedGalerieFiles.photo1)
+      formData.append("removeGalerie1", "true");
+    if (removeGalerie.photo2 && !selectedGalerieFiles.photo2)
+      formData.append("removeGalerie2", "true");
+    if (removeGalerie.photo3 && !selectedGalerieFiles.photo3)
+      formData.append("removeGalerie3", "true");
     try {
       if (edit) {
         await connect.put(`/api/prestations/${dataForm.id}`, formData);
@@ -267,6 +292,8 @@ const Categories = () => {
     setopen(false);
   };
   const handleopen = (p: sousCategories) => {
+    setRemoveImage(false);
+    setRemoveGalerie({ photo1: false, photo2: false, photo3: false });
     setopen(true);
     settextHeader(p.categorie);
     setdataForm({
@@ -534,6 +561,33 @@ const Categories = () => {
                             onClick={() => refphoto1.current?.click()}
                           />
                         </span>
+                        {photo.photo1 && (
+                          <p
+                            style={{
+                              cursor: "pointer",
+                              fontSize: "30px",
+                              color: "red",
+                              fontWeight: "bold",
+                              position: "absolute",
+                              margin: 0,
+                              top: "5px",
+                              right: "30px",
+                            }}
+                            onClick={() => {
+                              setphoto((prev) => ({ ...prev, photo1: "" }));
+                              setselectedGalerieFiles((prev) => ({
+                                ...prev,
+                                photo1: null,
+                              }));
+                              setRemoveGalerie((prev) => ({
+                                ...prev,
+                                photo1: true,
+                              }));
+                            }}
+                          >
+                            ❌
+                          </p>
+                        )}
                       </div>
                       <input
                         type="file"
@@ -561,6 +615,33 @@ const Categories = () => {
                             onClick={() => refphoto2.current?.click()}
                           />
                         </span>
+                        {photo.photo2 && (
+                          <p
+                            style={{
+                              cursor: "pointer",
+                              fontSize: "30px",
+                              color: "red",
+                              fontWeight: "bold",
+                              position: "absolute",
+                              margin: 0,
+                              top: "5px",
+                              right: "30px",
+                            }}
+                            onClick={() => {
+                              setphoto((prev) => ({ ...prev, photo2: "" }));
+                              setselectedGalerieFiles((prev) => ({
+                                ...prev,
+                                photo2: null,
+                              }));
+                              setRemoveGalerie((prev) => ({
+                                ...prev,
+                                photo2: true,
+                              }));
+                            }}
+                          >
+                            ❌
+                          </p>
+                        )}
                       </div>
                       <input
                         type="file"
@@ -588,6 +669,33 @@ const Categories = () => {
                             onClick={() => refphoto3.current?.click()}
                           />
                         </span>
+                        {photo.photo3 && (
+                          <p
+                            style={{
+                              cursor: "pointer",
+                              fontSize: "30px",
+                              color: "red",
+                              fontWeight: "bold",
+                              position: "absolute",
+                              margin: 0,
+                              top: "5px",
+                              right: "30px",
+                            }}
+                            onClick={() => {
+                              setphoto((prev) => ({ ...prev, photo3: "" }));
+                              setselectedGalerieFiles((prev) => ({
+                                ...prev,
+                                photo3: null,
+                              }));
+                              setRemoveGalerie((prev) => ({
+                                ...prev,
+                                photo3: true,
+                              }));
+                            }}
+                          >
+                            ❌
+                          </p>
+                        )}
                       </div>
                       <input
                         type="file"

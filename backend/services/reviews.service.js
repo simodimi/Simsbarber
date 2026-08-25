@@ -9,6 +9,12 @@ async function creer(userId, { note, commentaire, reservationId }) {
   // Vérifier que la réservation existe et appartient à l'utilisateur
   const reservation = await Reservation.findByPk(reservationId);
   if (!reservation) throw new ErreurMetier("Réservation introuvable", 404);
+  if (reservation.status !== "TERMINE") {
+    throw new ErreurMetier(
+      "Vous ne pouvez laisser un avis que sur une prestation confirmée",
+      403,
+    );
+  }
   if (reservation.userId !== userId) {
     throw new ErreurMetier(
       "Vous ne pouvez pas laisser un avis sur cette réservation",
@@ -97,7 +103,7 @@ async function listerParPrestation(prestationId, minNote) {
     include: [
       {
         model: Prestation,
-        as: "prestation",
+        as: "prestations",
         where: { id: prestationId },
         through: { attributes: [] }, // on ne récupère que les réservations
       },

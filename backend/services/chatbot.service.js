@@ -49,9 +49,7 @@ async function reindexerCatalogue() {
       p.descriptionComplete,
       `Prix : ${p.prix} euros`,
       `Durée : ${p.duree} minutes`,
-      p.produitsUtilises
-        ? `Produits utilisés : ${p.produitsUtilises.join(", ")}`
-        : "",
+      p.produitsUtilises ? `Produits utilisés : ${p.produitsUtilises}` : "",
     ]
       .filter(Boolean)
       .join(". ");

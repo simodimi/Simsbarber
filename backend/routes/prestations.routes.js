@@ -13,12 +13,26 @@ router.post(
   authAdmin,
   upload.fields([
     { name: "image", maxCount: 1 },
-    { name: "galerie", maxCount: 3 },
+    { name: "galerie1", maxCount: 1 },
+    { name: "galerie2", maxCount: 1 },
+    { name: "galerie3", maxCount: 1 },
   ]),
   validate(prestationSchema),
   controller.create,
 );
-router.put("/:id", authUser, authAdmin, controller.update);
+
+router.put(
+  "/:id",
+  authUser,
+  authAdmin,
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "galerie1", maxCount: 1 },
+    { name: "galerie2", maxCount: 1 },
+    { name: "galerie3", maxCount: 1 },
+  ]),
+  controller.update,
+);
 router.delete("/:id", authUser, authAdmin, controller.remove);
 
 module.exports = router;

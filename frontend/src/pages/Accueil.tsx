@@ -20,6 +20,7 @@ import load from "../assets/icone/statut.png";
 import chaise from "../assets/photos/home/chaise.png";
 import Siderbar from "../components/Siderbar";
 import connect from "../services/Util";
+import { toast } from "react-toastify";
 
 interface Avis {
   id: number;
@@ -33,6 +34,12 @@ interface smsprofil {
   sms: string;
   date: string;
   sender: "bot" | "user";
+}
+interface categories {
+  id: number;
+  categorie: string;
+  image: string;
+  description: string;
 }
 const Accueil = () => {
   const video = [video1, video2, video3];
@@ -171,7 +178,32 @@ const Accueil = () => {
       document.removeEventListener("mousedown", event);
     };
   }, []);
+  const [categorie, setcategorie] = useState<categories[]>([]);
+  const fetchCategories = async () => {
+    try {
+      const res = await connect.get("/api/categories");
+      const adapte = res.data.map(
+        (c: {
+          id: number;
+          nom: string;
+          image: string;
+          description: string;
+        }) => ({
+          id: c.id,
+          categorie: c.nom,
+          image: c.image,
+          description: c.description,
+        }),
+      );
+      setcategorie(adapte);
+    } catch (error) {
+      toast.error("Impossible de charger les catégories");
+    }
+  };
 
+  useEffect(() => {
+    fetchCategories();
+  }, []);
   return (
     <div className="AccueilHeader">
       <div className="AccueilHome">
@@ -212,81 +244,50 @@ const Accueil = () => {
           <div className="AccueilPrestationsTitle">
             <h2>Nos prestations phares</h2>
           </div>
-          <div className="AccueilPrestationsCard">
-            <div className="AccueilPrestationsCardList">
-              <GlowCard padding="20px 0" customSize className="w-full">
-                <img src={home1} alt="" />
-                <p>Coupe signature</p>
-                <p>
-                  Dégradé, coupe classique ou transformation complète, adaptée à
-                  votre style et à votre morphologie.
-                </p>
-                <p>à partir de 25€</p>
-                <Button
-                  className="glow"
-                  onClick={() => navigate("/prestation/Coupe")}
-                >
-                  Choisir cette prestation
-                </Button>
-              </GlowCard>
-            </div>
-            <div className="AccueilPrestationsCardList">
-              <GlowCard padding="20px 0" customSize className="w-full">
-                <img src={home2} alt="" />
-                <p>Taille de barbe premium</p>
-                <p>
-                  Contours précis, lignes nettes, entretien complet et finition
-                  soignée pour une barbe impeccable.
-                </p>
-                <p>à partir de 18€</p>
-                <Button
-                  className="glow"
-                  onClick={() => navigate("/prestation/Barbe")}
-                >
-                  Choisir cette prestation
-                </Button>
-              </GlowCard>
-            </div>
-            <div className="AccueilPrestationsCardList">
-              <GlowCard padding="20px 0" customSize className="w-full">
-                <img src={home3} alt="" />
-                <p>Soin complet visage & barbe</p>
-                <p>
-                  Un rituel premium pour rafraîchir votre style, hydrater la
-                  peau et sublimer votre barbe.
-                </p>
-                <p>à partir de 35€</p>
-                <Button
-                  className="glow"
-                  onClick={() => navigate("/prestation/Soins")}
-                >
-                  Choisir cette prestation
-                </Button>
-              </GlowCard>
-            </div>
-          </div>
-        </div>
-        <div className="AccueilClient">
-          <div className="AccueilPrestationsTitle">
-            <h2>Ils ont testé, ils approuvent</h2>
-          </div>
-          <div className="AccueilClientCard">
-            {afficheAvisClient.map((p, index) => (
-              <div
-                className="AccueilClientCardList"
-                key={p.id}
-                style={{
-                  backgroundColor: couleursActuelles[index],
-                }}
-              >
-                <img src={p.photos} alt="" />
-                <p>{p.name}</p>
-                <p>{p.message}</p>
-                <p>{"⭐".repeat(p.rating)}</p>
-              </div>
+          <div className="AccueilPrestationsCards">
+            {categorie.slice(0, 4).map((p) => (
+              <Link to={`/prestation/${p.categorie}`} key={p.id}>
+                <div className="AccueilPrestationsCardLists">
+                  <GlowCard
+                    padding="20px 0px"
+                    customSize
+                    width="100%"
+                    height="100%"
+                    className="w-full"
+                  >
+                    <img src={`http://localhost:5000${p.image}`} alt="" />
+                    <p id="CategorieTitle">{p.categorie}</p>
+                    <p id="CategorieDescription">{p.description}</p>
+                    <Button className="glow">Choisir cette prestation</Button>
+                  </GlowCard>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
+        {afficheAvisClient.length > 0 && (
+          <div className="AccueilClient">
+            <div className="AccueilPrestationsTitle">
+              <h2>Ils ont testé, ils approuvent</h2>
+            </div>
+            <div className="AccueilClientCard">
+              {afficheAvisClient.map((p, index) => (
+                <div
+                  className="AccueilClientCardList"
+                  key={p.id}
+                  style={{
+                    backgroundColor: couleursActuelles[index],
+                  }}
+                >
+                  <img src={p.photos} alt="" />
+                  <p>{p.name}</p>
+                  <p>{p.message}</p>
+                  <p>{"⭐".repeat(p.rating)}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="AccueilFooter">
           <div className="AccueilFooterLogo">
             <img src={logo} alt="" />

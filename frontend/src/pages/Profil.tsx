@@ -57,7 +57,7 @@ const Profil = () => {
                       position: "absolute",
                       top: "-5px",
                       right: "-10px",
-                      backgroundColor: "red",
+                      backgroundColor: "green",
                       color: "white",
                       borderRadius: "50%",
                       padding: "2px 6px",

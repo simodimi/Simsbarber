@@ -2,7 +2,7 @@
   flex: 1;
   padding: 20px 5%;
   width: 90%;
-
+  height: calc(100vh - 325px);
   min-height: 0; /* empêche le flex item de garder sa taille "auto" par défaut */
   display: flex; /* pour que le Calendar (height:100%) ait une référence fiable */
   flex-direction: column;
@@ -144,6 +144,23 @@
   padding: 20px 30px;
   font-family: var(--police1);
   scrollbar-width: thin !important;
+}
+.customCalendars {
+  background-color: var(--text);
+  color: #e8c97e;
+  width: 100%;
+  padding: 20px 30px;
+  font-family: var(--police1);
+  box-sizing: border-box;
+}
+.ButonClendars {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
 }
 .customCalendar input {
   font-family: var(--police1);

@@ -30,6 +30,10 @@ const Message = sequelize.define("Message", {
     allowNull: false,
     defaultValue: false,
   },
+  broadcastGroupId: {
+    type: DataTypes.STRING(36),
+    allowNull: true,
+  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,

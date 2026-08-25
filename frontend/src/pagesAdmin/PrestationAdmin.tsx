@@ -107,78 +107,6 @@ const PrestationAdmin = () => {
       reader.readAsDataURL(file);
     }
   };
-  /* const handlesubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (
-      dataForm.categorie.trim() === "" ||
-      dataForm.description.trim() === "" ||
-      dataForm.image === ""
-    ) {
-      toast.error("Veuillez remplir tous les champs du formulaire");
-      return;
-    }
-    const formData = new FormData();
-    formData.append("nom", dataForm.categorie);
-    formData.append("description", dataForm.description);
-    if (selectedFile) {
-      formData.append("image", selectedFile);
-    }
-    // if (edit) {
-  
-        const update = categorie.map((p) =>
-          p.id === dataForm.id
-            ? {
-                ...p,
-                categorie: dataForm.categorie,
-                image: dataForm.image,
-                description: dataForm.description,
-              }
-            : p,
-        );
-    
-    } else {
-      const newdata: categories = {
-        id: Date.now(),
-        categorie: dataForm.categorie,
-        image: dataForm.image,
-        description: dataForm.description,
-      };
-      const update = [...categorie, newdata];
-      setcategorie(update);
-      localStorage.setItem("categories", JSON.stringify(update));
-    }//
-    try {
-      if (edit) {
-        await connect.put(`/api/categories/${dataForm.id}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        toast.success(`Catégorie "${dataForm.categorie}" modifiée avec succès`);
-      } else {
-        await connect.post("/api/categories", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        toast.success(`Catégorie "${dataForm.categorie}" créée avec succès`);
-      }
-      await fetchCategories();
-    } catch (error) {
-      const err = error as AxiosError;
-      toast.error(err.response?.data?.error || "Une erreur s'est produite.");
-      return;
-    }
-
-    setedit(false);
-    setdataForm({ id: 0, categorie: "", image: "", description: "" });
-    setimageHeader("");
-    setselectedFile(null);
-    setlengthcategorie(0);
-    setlengthdescribe(0);
-    setopen(false);
-  };*/
   const handlesubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -208,19 +136,11 @@ const PrestationAdmin = () => {
 
     try {
       if (edit) {
-        await connect.put(`/api/categories/${dataForm.id}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await connect.put(`/api/categories/${dataForm.id}`, formData);
 
         toast.success(`Catégorie "${categorieNettoyee}" modifiée avec succès`);
       } else {
-        await connect.post("/api/categories", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await connect.post("/api/categories", formData);
 
         toast.success(`Catégorie "${categorieNettoyee}" créée avec succès`);
       }

@@ -33,7 +33,12 @@ exports.adminConversations = async (req, res, next) => {
 
 exports.adminMessagesForUser = async (req, res, next) => {
   try {
-    res.json(await messagesService.obtenirMessagesAdmin(req.params.userId));
+    res.json(
+      await messagesService.obtenirMessagesAdmin(
+        req.params.userId,
+        req.user.sub,
+      ),
+    );
   } catch (err) {
     next(err);
   }
@@ -68,6 +73,13 @@ exports.broadcast = async (req, res, next) => {
     const io = req.app.get("io");
     if (io) io.emit("message:broadcast", messages);
     res.status(201).json(messages);
+  } catch (err) {
+    next(err);
+  }
+};
+exports.adminBroadcastHistory = async (req, res, next) => {
+  try {
+    res.json(await messagesService.obtenirBroadcastsAdmin());
   } catch (err) {
     next(err);
   }

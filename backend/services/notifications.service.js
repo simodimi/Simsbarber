@@ -36,10 +36,50 @@ async function listerPourAdmin(adminId) {
 async function marquerCommeLue(id) {
   await Notification.update({ read: true }, { where: { id } });
 }
+async function compterNonLues({ recipientType, userId, adminId }) {
+  return Notification.count({
+    where: {
+      recipientType,
+      ...(userId ? { userId } : {}),
+      ...(adminId ? { adminId } : {}),
+      read: false,
+    },
+  });
+}
 
+async function marquerNotificationsMessagesLues(userId) {
+  await Notification.update(
+    { read: true },
+    {
+      where: {
+        recipientType: "USER",
+        userId,
+        type: "NOUVEAU_MESSAGE",
+        read: false,
+      },
+    },
+  );
+}
+async function marquerNotificationsAdminLues(adminId, userId) {
+  await Notification.update(
+    { read: true },
+    {
+      where: {
+        recipientType: "ADMIN",
+        adminId,
+        type: "NOUVEAU_MESSAGE",
+        link: `/admin/message?userId=${userId}`,
+        read: false,
+      },
+    },
+  );
+}
 module.exports = {
   creerNotification,
   listerPourUser,
   listerPourAdmin,
   marquerCommeLue,
+  compterNonLues,
+  marquerNotificationsMessagesLues,
+  marquerNotificationsAdminLues,
 };

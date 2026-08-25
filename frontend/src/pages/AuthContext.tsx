@@ -10,6 +10,7 @@ interface User {
   photoUser: string;
   statut: string;
   chatBackgroundUrl: string;
+  createdAt: string;
 }
 
 interface AuthContextType {

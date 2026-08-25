@@ -21,6 +21,7 @@ import * as React from "react";
 import { toast } from "react-toastify";
 import connect from "../services/Util";
 import { connectSocket } from "../services/socket";
+import Siderbar from "./Siderbar";
 
 const CONTACT_TELEPHONE = "0751255097";
 const CONTACT_EMAIL = "simodimitri08@gmail.com";
@@ -110,6 +111,7 @@ const Calendrier = () => {
   const [saveData, setSaveData] = useState(() => {
     return location.state?.prestation || null;
   });
+  console.log(selectedslot);
   const [formData, setformData] = useState<Calendarevent>({
     id: `${Date.now()}-${Math.floor(Math.random() * 10000)}`,
     description: "",
@@ -131,7 +133,23 @@ const Calendrier = () => {
   const [servicesData, setServicesData] = useState<ServiceItem[]>([]);
   const [CategorieSelect, setCategorieSelect] = useState<string[]>([]);
   const [selectedServices, setSelectedServices] = useState<ServiceItem[]>([]);
-
+  //modificaion
+  const [initialSnapshot, setInitialSnapshot] = useState<string | null>(null);
+  const [pictureRemoved, setPictureRemoved] = useState(false);
+  const buildSignature = (data: {
+    description?: string;
+    starttime: string;
+    start: Date;
+    servicesIds: number[];
+    picture?: string;
+  }) =>
+    JSON.stringify({
+      description: data.description || "",
+      starttime: data.starttime,
+      start: format(data.start, "yyyy-MM-dd"),
+      services: [...data.servicesIds].sort((a, b) => a - b),
+      picture: data.picture || "",
+    });
   // Chargement des prestations
   const fetchPrestations = async () => {
     try {
@@ -157,31 +175,35 @@ const Calendrier = () => {
       const res = await connect.get("/api/reservations/me", {
         params: { itemsParPage: 999 },
       });
-      const all = [...res.data.passees, ...res.data.aVenir];
-      const adapte: Calendarevent[] = all.map((r: any) => ({
-        id: String(r.id),
-        description: r.description || "",
-        picture: r.pictureUrl ? `http://localhost:5000${r.pictureUrl}` : "",
-        start: new Date(r.start),
-        end: new Date(r.end),
-        starttime: new Date(r.start).toTimeString().slice(0, 5),
-        color: r.color || getColorForCategorie(r.titre?.split(" ")[0] || ""),
-        prix: String(r.prixTotal),
-        duree: String(r.dureeTotal),
-        nom: r.titre,
-        slug: "",
-        descriptionComplete: r.descriptionComplete || "",
-        categories: r.categoriesSelectionnees || [],
-        servicesSelectionnes: (r.prestations || []).map((p: any) => ({
-          id: p.id,
-          nom: p.nom,
-          categorie: p.category?.nom || "",
-          prix: p.ReservationPrestation?.prixSnapshot ?? p.prix,
-          duree: p.duree,
-          descriptionComplete: p.descriptionComplete,
-        })),
-        status: r.status,
-      }));
+      const all = res.data.data;
+      const adapte: Calendarevent[] = all
+        .filter((r: any) => r.status !== "ANNULE")
+        .map((r: any) => ({
+          id: String(r.id),
+          description: r.description || "",
+          picture: r.pictureUrl ? `http://localhost:5000${r.pictureUrl}` : "",
+          start: new Date(r.start),
+          end: new Date(r.end),
+          starttime: new Date(r.start).toTimeString().slice(0, 5),
+          color: r.color || getColorForCategorie(r.titre?.split(" ")[0] || ""),
+          prix: String(r.prixTotal),
+          duree: String(r.dureeTotal),
+          nom: r.titre,
+          slug: "",
+          descriptionComplete: r.descriptionComplete || "",
+          categories: (r.prestations || []).map(
+            (p: any) => p.category?.nom || "",
+          ),
+          servicesSelectionnes: (r.prestations || []).map((p: any) => ({
+            id: p.id,
+            nom: p.nom,
+            categorie: p.category?.nom || "",
+            prix: p.ReservationPrestation?.prixSnapshot ?? p.prix,
+            duree: p.duree,
+            descriptionComplete: p.descriptionComplete,
+          })),
+          status: r.status,
+        }));
       setEvents(adapte);
     } catch (error) {
       toast.error("Impossible de charger vos réservations");
@@ -310,11 +332,11 @@ const Calendrier = () => {
     const finalStart = combineDateAndTime(formData.start, formData.starttime);
     const finalEnd = new Date(finalStart.getTime() + dureeFinale * 60000);
 
-    const openingTime = combineDateAndTime(formData.start, "08:30");
-    const closingTime = combineDateAndTime(formData.start, "17:00");
+    const openingTime = combineDateAndTime(formData.start, "09:00");
+    const closingTime = combineDateAndTime(formData.start, "19:00");
     if (finalStart < openingTime || finalEnd > closingTime) {
       toast.error(
-        `Veuillez choisir une heure entre 08:30 et 17:00 (la séance dure ${dureeFinale} min).`,
+        `Veuillez choisir une heure entre 09:00 et 19:00 (la séance dure ${dureeFinale} min).`,
       );
       return;
     }
@@ -357,6 +379,8 @@ const Calendrier = () => {
     ) as HTMLInputElement;
     if (fileInput?.files?.[0]) {
       formPayload.append("picture", fileInput.files[0]);
+    } else if (editingEvent && pictureRemoved) {
+      formPayload.append("removePicture", "true");
     }
 
     try {
@@ -412,6 +436,15 @@ const Calendrier = () => {
       categories: p.categories,
       servicesSelectionnes: p.servicesSelectionnes,
     });
+    setInitialSnapshot(
+      buildSignature({
+        description: p.description,
+        starttime: p.starttime,
+        start: p.start,
+        servicesIds: p.servicesSelectionnes.map((s) => s.id),
+        picture: p.picture,
+      }),
+    );
     setOpen(true);
   };
 
@@ -531,17 +564,23 @@ const Calendrier = () => {
     }
     return {};
   };
-
+  const hasChanges =
+    !editingEvent ||
+    initialSnapshot !==
+      buildSignature({
+        description: formData.description,
+        starttime: formData.starttime,
+        start: formData.start,
+        servicesIds: selectedServices.map((s) => s.id),
+        picture: formData.picture,
+      });
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        height: "100vh",
-      }}
-    >
+    <div className="AccueilHeader">
+      <div className="AccueilHome">
+        <Siderbar />
+      </div>
       <div className="btnRetour">
+        {" "}
         <Button className="succes" onClick={() => navigate(-1)}>
           Retour
         </Button>
@@ -640,6 +679,10 @@ const Calendrier = () => {
               borderRadius: "6px",
               color: "white",
               border: "none",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
             },
           })}
         />
@@ -786,17 +829,35 @@ const Calendrier = () => {
                       id="CalendarFormCardHour"
                       value={formData.starttime}
                       onChange={handlechange}
-                      min="08:30"
-                      max="17:00"
+                      min="09:00"
+                      max="19:00"
                     />
                   </div>
                   <div className="CalendarFormCardPicure">
                     <p>Vous voulez ajouter une photo de votre modèle?</p>
-                    {formData.picture && <img src={formData.picture} alt="" />}
+                    {formData.picture && (
+                      <>
+                        <img src={formData.picture} alt="" />
+                        <Button
+                          type="button"
+                          className="error"
+                          style={{ marginTop: "20px" }}
+                          onClick={() => {
+                            setformData((prev) => ({ ...prev, picture: "" }));
+                            setPictureRemoved(true);
+                          }}
+                        >
+                          Retirer la photo
+                        </Button>
+                      </>
+                    )}
                     <input
                       type="file"
                       name="picture"
-                      onChange={handlechangePicture}
+                      onChange={(e) => {
+                        setPictureRemoved(false); // une nouvelle photo annule l'intention de retrait
+                        handlechangePicture(e);
+                      }}
                       accept="image/*"
                     />
                   </div>
@@ -813,9 +874,11 @@ const Calendrier = () => {
                         Annuler la réservation
                       </Button>
                     )}
-                    <Button className="succes" type="submit">
-                      Confirmer
-                    </Button>
+                    {(!editingEvent || hasChanges) && (
+                      <Button className="succes" type="submit">
+                        Confirmer
+                      </Button>
+                    )}
                   </div>
                 </form>
               </div>
@@ -874,10 +937,10 @@ const Calendrier = () => {
           open={openRestricted}
           onClose={() => setOpenRestricted(false)}
           className="custom-dialog"
-          maxWidth="sm"
+          maxWidth="md"
           fullWidth
         >
-          <div className="customCalendar">
+          <div className="customCalendars">
             <DialogTitle id="alert-dialog-title">
               Rendez-vous dans moins de {DELAI_ANNULATION_HEURES}h
             </DialogTitle>
@@ -912,18 +975,18 @@ const Calendrier = () => {
                   Prix : <span>{restrictedEvent.prix} €</span>
                 </p>
               </div>
-              <div className="ButonClendar">
+              <div className="ButonClendars">
                 <a
                   className="succes ButtonLike"
                   href={`tel:${CONTACT_TELEPHONE}`}
                 >
-                  Appeler le salon
+                  <Button className="warning">Appeler le salon</Button>
                 </a>
                 <a
                   className="warning ButtonLike"
                   href={`mailto:${CONTACT_EMAIL}`}
                 >
-                  Envoyer un email
+                  <Button className="warning">Envoyer un email</Button>
                 </a>
                 <Button
                   className="error"

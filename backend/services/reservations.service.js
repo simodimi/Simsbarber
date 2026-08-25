@@ -1,5 +1,11 @@
 const dayjs = require("dayjs");
-const { sequelize, Reservation, Prestation, User } = require("../models");
+const {
+  sequelize,
+  Reservation,
+  Prestation,
+  User,
+  Category,
+} = require("../models");
 const { validerCreneau } = require("./reservations.rules");
 const { ErreurMetier } = require("./auth.service");
 const notificationsService = require("./notifications.service");
@@ -172,9 +178,12 @@ async function modifierReservation(id, data) {
     data.prixTotal = prestations.reduce((sum, p) => sum + p.prix, 0);
 
     if (data.prestationIds) {
-      await reservation.setPrestations(prestations, {
-        through: (p) => ({ prixSnapshot: p.prix }),
-      });
+      await reservation.setPrestations([]); // on vide la relation existante
+      for (const p of prestations) {
+        await reservation.addPrestation(p, {
+          through: { prixSnapshot: p.prix },
+        });
+      }
     }
   }
 
@@ -232,7 +241,13 @@ async function listerMesReservations(
   // On peut donc simplement réutiliser la même fonction avec un paramètre type.
   const { rows, count } = await Reservation.findAndCountAll({
     where,
-    include: [{ model: Prestation, as: "prestations" }],
+    include: [
+      {
+        model: Prestation,
+        as: "prestations",
+        include: [{ model: Category, as: "category" }],
+      },
+    ],
     order: [["start", type === "past" ? "DESC" : "ASC"]],
     limit: itemsParPage,
     offset,
@@ -245,7 +260,11 @@ async function listerToutes(userId) {
     where: userId ? { userId } : {},
     include: [
       { model: User, as: "user", attributes: ["id", "nameUser", "mailUser"] },
-      { model: Prestation, as: "prestations" },
+      {
+        model: Prestation,
+        as: "prestations",
+        include: [{ model: Category, as: "category" }],
+      },
     ],
     order: [["start", "ASC"]],
   });

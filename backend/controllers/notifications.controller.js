@@ -20,3 +20,20 @@ exports.markRead = async (req, res, next) => {
     next(err);
   }
 };
+exports.unreadCount = async (req, res, next) => {
+  try {
+    const count =
+      req.user.role === "admin"
+        ? await notificationsService.compterNonLues({
+            recipientType: "ADMIN",
+            adminId: req.user.sub,
+          })
+        : await notificationsService.compterNonLues({
+            recipientType: "USER",
+            userId: req.user.sub,
+          });
+    res.json({ count });
+  } catch (err) {
+    next(err);
+  }
+};

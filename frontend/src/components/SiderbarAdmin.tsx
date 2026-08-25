@@ -6,10 +6,12 @@ import logo from "../assets/icone/logo2.png";
 import logouts from "../assets/icone/logout.png";
 import "../styles/accueil.css";
 import { useAdminAuth } from "../pagesAdmin/AdminAuthContext";
+import { useNotification } from "..//services/NotificationContext";
 
 const SiderbarAdmin = () => {
   const [hidingProfil, sethidingProfil] = useState<boolean>(false);
   const [selectMenu, setselectMenu] = useState<string>("");
+  const { unreadCount } = useNotification();
   const navigate = useNavigate();
   const { admin, logout } = useAdminAuth();
   const local = useLocation();
@@ -57,6 +59,7 @@ const SiderbarAdmin = () => {
   useEffect(() => {
     blockref.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
+
   return (
     <div className="AccueilHome" ref={blockref}>
       <div className="AccueilNavbar">
@@ -93,6 +96,23 @@ const SiderbarAdmin = () => {
               className={`Header ${selectMenu === "message" ? "active" : ""}`}
             >
               Message
+              {unreadCount > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "-15px",
+                    right: "-15px",
+                    backgroundColor: "green",
+                    color: "white",
+                    borderRadius: "50%",
+                    padding: "2px 6px",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {unreadCount}
+                </span>
+              )}
             </div>
           </Link>
           <Link to={"/admin/client"}>

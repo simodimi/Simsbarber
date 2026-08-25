@@ -17,7 +17,7 @@ import person from "../assets/icone/person.png";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import connect, { setAccessToken } from "../services/Util";
-
+import { useAuth } from "../pages/AuthContext";
 // Types
 interface para {
   id: number;
@@ -62,7 +62,7 @@ const backgroundUrls = [
   `http://localhost:5000/background/galaxie.jpeg`,
   `http://localhost:5000/background/mountains.jpg`,
   `http://localhost:5000/background/neige.jpg`,
-  `http://localhost:5000/background/pink.jpg`,
+  `http://localhost:5000/background/pink.jpeg`,
   `http://localhost:5000/background/water.jpg`,
 ];
 
@@ -70,7 +70,7 @@ const Para = ({ setvisualbackground }: BgProps) => {
   const navigate = useNavigate();
 
   // État utilisateur
-  const [user, setUser] = useState<any>(null);
+  const { user, setUser } = useAuth();
   const [loading, setLoading] = useState(true);
 
   // Menus
@@ -225,9 +225,7 @@ const Para = ({ setvisualbackground }: BgProps) => {
         // Upload de fichier
         const formData = new FormData();
         formData.append("photo", selectedPhotoFile);
-        const res = await connect.post("/api/users/me/photo", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const res = await connect.post("/api/users/me/photo", formData);
         // L'URL retournée est complète (grâce à la modification backend)
         setviewPhoto(res.data.photoUser);
         setUser(res.data);
@@ -283,9 +281,6 @@ const Para = ({ setvisualbackground }: BgProps) => {
         const res = await connect.post(
           "/api/users/me/chat-background",
           formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          },
         );
         setviewbg(res.data.chatBackgroundUrl);
         setvisualbackground(res.data.chatBackgroundUrl);

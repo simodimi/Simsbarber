@@ -26,4 +26,10 @@ router.put(
 router.delete("/me", authUser, controller.deleteMe);
 //Récupérer tous les utilisateurs (admin uniquement)
 router.get("/", authUser, authAdmin, controller.getAllUsers);
+router.post(
+  "/me/chat-background",
+  authUser,
+  upload.single("background"),
+  controller.uploadChatBackground,
+);
 module.exports = router;

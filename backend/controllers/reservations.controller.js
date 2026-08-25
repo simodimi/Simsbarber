@@ -82,8 +82,13 @@ exports.cancelMine = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    const pictureUrl = req.file ? getImageUrl(req.file) : null;
-    const reservationData = { ...req.body, pictureUrl };
+    const reservationData = { ...req.body };
+    if (req.file) {
+      reservationData.pictureUrl = getImageUrl(req.file);
+    } else if (req.body.removePicture === "true") {
+      reservationData.pictureUrl = null;
+    }
+    delete reservationData.removePicture;
 
     const reservation = await reservationsService.modifierReservation(
       req.params.id,
@@ -112,17 +117,6 @@ exports.remove = async (req, res, next) => {
   }
 };
 
-/*exports.mine = async (req, res, next) => {
-  try {
-    const data = await reservationsService.listerMesReservations(req.user.sub, {
-      page: Number(req.query.page) || 1,
-      itemsParPage: Number(req.query.itemsParPage) || 3,
-    });
-    res.json(data);
-  } catch (err) {
-    next(err);
-  }
-};*/
 exports.mine = async (req, res, next) => {
   try {
     const type = req.query.type || "all"; // past, upcoming, all

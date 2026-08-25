@@ -7,12 +7,19 @@ const {
   createReservationSchema,
   createAdminReservationSchema,
 } = require("../validators/reservations.validators");
+const normalizePrestationIds = (req, res, next) => {
+  if (req.body.prestationIds && !Array.isArray(req.body.prestationIds)) {
+    req.body.prestationIds = [req.body.prestationIds];
+  }
+  next();
+};
 const upload = require("../middlewares/upload");
 
 router.post(
   "/",
   authUser,
   upload.single("picture"),
+  normalizePrestationIds,
   validate(createReservationSchema),
   controller.create,
 );
@@ -22,6 +29,7 @@ router.post(
   authUser,
   authAdmin,
   upload.single("picture"),
+  normalizePrestationIds,
   validate(createAdminReservationSchema),
   controller.createAdmin,
 );

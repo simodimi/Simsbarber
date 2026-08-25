@@ -35,7 +35,6 @@ interface ReservationAPI {
   dureeTotal: number;
   pictureUrl: string | null;
   prestations: Prestation[];
-  // ... autres champs éventuels
 }
 
 interface ReviewAPI {
@@ -51,7 +50,31 @@ interface PaginationProps {
   itemsParPage?: number;
 }
 
-// ---------- Composant ----------
+const STATUS_LABELS: Record<ReservationAPI["status"], string> = {
+  CONFIRME: "En attente",
+  TERMINE: "Confirmée",
+  ANNULE: "Annulée",
+};
+const STATUS_COLORS: Record<ReservationAPI["status"], string> = {
+  CONFIRME: "#f0ad4e", // en attente
+  TERMINE: "#28a745", // confirmée
+  ANNULE: "#dc3545", // annulée
+};
+
+const StatusBadge = ({ status }: { status: ReservationAPI["status"] }) => (
+  <span
+    style={{
+      backgroundColor: STATUS_COLORS[status],
+      color: "white",
+      padding: "2px 10px",
+      borderRadius: "12px",
+      fontSize: "12px",
+      fontWeight: 600,
+    }}
+  >
+    {STATUS_LABELS[status]}
+  </span>
+);
 const Reservation = ({ itemsParPage = 3 }: PaginationProps) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -239,7 +262,10 @@ const Reservation = ({ itemsParPage = 3 }: PaginationProps) => {
           Prestation: <span>{reservation.titre}</span>
         </p>
         <p>
-          Statut: <span>{reservation.status}</span>
+          Statut:{" "}
+          <span>
+            <StatusBadge status={reservation.status} />
+          </span>
         </p>
         <p>
           Date: <span>{new Date(reservation.start).toLocaleDateString()}</span>
@@ -360,7 +386,10 @@ const Reservation = ({ itemsParPage = 3 }: PaginationProps) => {
                 Durée : <span>{selectedReservation.dureeTotal}</span> min
               </p>
               <p>
-                Status : <span>{selectedReservation.status}</span>
+                Status :{" "}
+                <span>
+                  <StatusBadge status={selectedReservation.status} />
+                </span>
               </p>
               <p>
                 Prix : <span>{selectedReservation.prixTotal}</span> €
@@ -370,7 +399,12 @@ const Reservation = ({ itemsParPage = 3 }: PaginationProps) => {
               </p>
 
               {/* Gestion de l'avis */}
-              {existingReview && editMode ? (
+              {selectedReservation.status !== "TERMINE" ? (
+                <p style={{ color: "black" }}>
+                  Vous pourrez laisser un avis une fois la prestation confirmée
+                  par le salon.
+                </p>
+              ) : existingReview && editMode ? (
                 <div>
                   <p
                     style={{

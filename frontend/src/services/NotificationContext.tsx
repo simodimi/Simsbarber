@@ -8,6 +8,7 @@ interface NotificationContextType {
   setUnreadCount: (count: number) => void;
   incrementUnread: () => void;
   resetUnread: () => void;
+  refreshUnread: () => Promise<void>;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(
@@ -20,7 +21,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
   const [unreadCount, setUnreadCount] = useState<number>(0);
 
   // Récupérer le compteur initial au chargement
-  const fetchInitialUnread = async () => {
+  /*const fetchInitialUnread = async () => {
     try {
       const res = await connect.get("/api/notifications/unread"); // si vous avez cette route
       // Sinon, on peut compter via /api/messages/me
@@ -28,9 +29,29 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch {
       setUnreadCount(0);
     }
+  };*/
+  const fetchUnread = async () => {
+    try {
+      const res = await connect.get("/api/notifications/unread-count");
+      setUnreadCount(res.data.count || 0);
+    } catch {
+      setUnreadCount(0);
+    }
   };
 
   useEffect(() => {
+    fetchUnread();
+    const socket = connectSocket();
+    const handleNewMessage = () => setUnreadCount((prev) => prev + 1);
+    const handleBroadcast = () => setUnreadCount((prev) => prev + 1);
+    socket.on("message:new", handleNewMessage);
+    socket.on("message:broadcast", handleBroadcast);
+    return () => {
+      socket.off("message:new", handleNewMessage);
+      socket.off("message:broadcast", handleBroadcast);
+    };
+  }, []);
+  /*useEffect(() => {
     fetchInitialUnread();
 
     const socket = connectSocket();
@@ -52,14 +73,20 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
       socket.off("message:new", handleNewMessage);
       socket.off("message:broadcast", handleBroadcast);
     };
-  }, []);
+  }, []);*/
 
   const incrementUnread = () => setUnreadCount((prev) => prev + 1);
   const resetUnread = () => setUnreadCount(0);
 
   return (
     <NotificationContext.Provider
-      value={{ unreadCount, setUnreadCount, incrementUnread, resetUnread }}
+      value={{
+        unreadCount,
+        setUnreadCount,
+        incrementUnread,
+        resetUnread,
+        refreshUnread: fetchUnread,
+      }}
     >
       {children}
     </NotificationContext.Provider>

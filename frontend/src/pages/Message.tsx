@@ -12,7 +12,8 @@ import DialogContent from "@mui/material/DialogContent";
 import Button from "../ui/Button";
 import connect from "../services/Util";
 import { connectSocket } from "../services/socket";
-
+import { useNotification } from "../services/NotificationContext";
+import { useAuth } from "../pages/AuthContext";
 const Message = () => {
   interface dataSms {
     id: string;
@@ -26,16 +27,20 @@ const Message = () => {
   // État pour l'emoji picker
   const [showEmoji, setShowEmoji] = useState<boolean>(false);
   const emojiref = useRef<HTMLDivElement | null>(null);
-
+  const { refreshUnread } = useNotification();
   // Gestion des événements socket
   useEffect(() => {
     const socket = connectSocket();
-    socket.on("message:new", () => fetchMessages());
-    socket.on("message:broadcast", () => fetchMessages());
+    const sync = () => fetchMessages();
+
+    socket.on("connect", sync); // resync après toute (re)connexion
+    socket.on("message:new", sync);
+    socket.on("message:broadcast", sync);
 
     return () => {
-      socket.off("message:new");
-      socket.off("message:broadcast");
+      socket.off("connect", sync);
+      socket.off("message:new", sync);
+      socket.off("message:broadcast", sync);
     };
   }, []);
 
@@ -54,6 +59,7 @@ const Message = () => {
 
   // État du message en cours de saisie
   const [writeSms, setWriteSms] = useState<string>("");
+  const { user } = useAuth();
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setWriteSms(e.target.value);
@@ -90,6 +96,7 @@ const Message = () => {
       timestamp: new Date(m.createdAt).getTime(),
     }));
     setConversation(adapte);
+    refreshUnread();
   };
 
   useEffect(() => {
@@ -165,9 +172,7 @@ const Message = () => {
           <div
             className="ProfilMessageContentSms"
             style={{
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
+              backgroundImage: `url(${user?.chatBackgroundUrl})`,
             }}
           >
             {messageCurrent.map((p, index) => {

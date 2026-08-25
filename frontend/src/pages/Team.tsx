@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import Siderbar from "../components/Siderbar";
 import Button from "../ui/Button";
 import { GlowCard } from "../ui/Card";
-import { teamMembers } from "../store/Bdd";
 import "../styles/about.css";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
