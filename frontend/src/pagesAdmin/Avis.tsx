@@ -59,6 +59,7 @@ const Avis = ({ setavissms, visualconsult }: bgprops) => {
     filter2: "",
   });
   const [openfilter, setopenfilter] = useState<boolean>(false);
+
   //clic en dehors du container
   const refslider = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -80,7 +81,9 @@ const Avis = ({ setavissms, visualconsult }: bgprops) => {
       id: r.id,
       userId: r.user.id,
       photoUser: r.user.photoUser
-        ? `http://localhost:5000${r.user.photoUser}`
+        ? r.user.photoUser.startsWith("http")
+          ? r.user.photoUser
+          : `http://localhost:5000${r.user.photoUser}`
         : img,
       nameUser: r.user.nameUser,
       mailUser: r.user.mailUser,
@@ -99,6 +102,7 @@ const Avis = ({ setavissms, visualconsult }: bgprops) => {
   };
   useEffect(() => {
     if (!visualconsult) return;
+    setClientColor(null);
     setsearch({
       filter1: visualconsult.mailUser || "",
       filter2: visualconsult.nameUser || "",

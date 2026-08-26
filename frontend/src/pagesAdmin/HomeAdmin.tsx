@@ -275,6 +275,7 @@ const HomeAdmin = () => {
   const fetchOrders = async () => {
     try {
       const res = await connect.get("/api/reservations");
+
       const adapte: SalonOrder[] = [];
       res.data.forEach((r: any) => {
         if (r.status !== "TERMINE") return;
@@ -360,7 +361,7 @@ const HomeAdmin = () => {
     }
     autoTable(pdfDoc, {
       startY: 32,
-      head: [[head]],
+      head: [head],
       body: rows.map((r) => [
         r.label,
         r.count?.toString() ?? "-",

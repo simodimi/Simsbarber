@@ -60,7 +60,26 @@ async function reindexerCatalogue() {
       payload: { type: "prestation", id: p.id, texte },
     });
   }
-
+  const parCategorie = {};
+  for (const p of prestations) {
+    const cat = p.category?.nom || "Autre";
+    (parCategorie[cat] ||= []).push(p.nom);
+  }
+  for (const [cat, noms] of Object.entries(parCategorie)) {
+    const texte = `La catégorie ${cat} comprend ${noms.length} prestation(s) : ${noms.join(", ")}.`;
+    points.push({
+      id: pointId++,
+      vector: await embed(texte),
+      payload: { type: "categorie", texte },
+    });
+  }
+  points.push({
+    id: pointId++,
+    vector: await embed(
+      `Le salon propose ${Object.keys(parCategorie).length} catégories : ${Object.keys(parCategorie).join(", ")}.`,
+    ),
+    payload: { type: "categorie", texte: "liste des catégories" },
+  });
   for (const m of membres) {
     const texte = [
       `Membre de l'équipe : ${m.prenom} ${m.nom}`,
@@ -81,10 +100,15 @@ async function reindexerCatalogue() {
 
   const INFOS_STATIQUES = [
     "Le salon est ouvert du lundi au samedi de 9h à 19h, fermé le dimanche.",
-    "Pour réserver, le client se connecte à son compte, choisit une prestation dans le catalogue, puis sélectionne une date et une heure disponible dans le calendrier.",
-    "Une réservation peut être annulée par l'administrateur si besoin ; le client en est alors notifié.",
-    "Pour toute question, un client peut envoyer un message directement au salon via la messagerie de l'application.",
+    "Pour prendre rendez-vous, le client clique sur 'Réserver maintenant' sur la page d'accueil, ou va sur la page Calendrier (/calendrier) : il choisit une catégorie, une sous-catégorie, une date et une heure.",
+    "Le client consulte ses réservations passées et à venir dans son espace Profil, rubrique Réservations.",
+    "Le client peut annuler sa propre réservation depuis le Calendrier, uniquement si elle a lieu dans plus de 24h ; en dessous, il doit contacter le salon.",
+    "Une réservation peut aussi être annulée par l'administrateur ; le client en est alors notifié.",
+    "Pour toute autre question, un client peut écrire au salon via la messagerie de l'application.",
     "Le paiement se fait sur place, au salon, au moment de la prestation.",
+    "Pour changer sa photo de profil : Profil > Mes Paramètres > 'Changer photo de profil' — le client peut soit uploader sa propre image, soit choisir un avatar prédéfini dans la liste proposée.",
+    "Le client peut aussi, dans Mes Paramètres, changer son mot de passe, changer le fond d'écran de sa messagerie, consulter les infos de son compte, ou supprimer son compte.",
+    "Pour envoyer un message au salon : Profil > Mes Messages, avec possibilité de joindre une photo.",
   ];
 
   for (const texte of INFOS_STATIQUES) {
@@ -105,7 +129,7 @@ async function reindexerCatalogue() {
   return { indexes: points.length };
 }
 
-async function rechercherContexte(question, topK = 5) {
+async function rechercherContexte(question, topK = 8) {
   const vector = await embed(question);
   const resultats = await qdrant.search(COLLECTION_NAME, {
     vector,

@@ -35,6 +35,7 @@ interface ServiceItem {
 //evenements calendrier
 interface Calendarevent {
   id: string;
+  userName?: string;
   description?: string;
   picture?: string;
   start: Date;
@@ -73,6 +74,15 @@ const COLORS = [
   { value: "#911eb4", label: "Violet" },
   { value: "#f58231", label: "Orange" },
 ];
+
+const getColorForCategorie = (categorie: string): string => {
+  if (!categorie) return COLORS[0].value;
+  let hash = 0;
+  for (let i = 0; i < categorie.length; i++) {
+    hash = categorie.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return COLORS[Math.abs(hash) % COLORS.length].value;
+};
 const Planning = () => {
   const [events, setEvents] = useState<Calendarevent[]>([]);
   const navigate = useNavigate();
@@ -92,7 +102,22 @@ const Planning = () => {
   const [deleteEvent, setedeleteEvent] = useState<Calendarevent | null>(null);
   //édition
   const [editingEvent, seteditingEvent] = useState<Calendarevent | null>(null);
+  const [initialSnapshot, setInitialSnapshot] = useState<string | null>(null);
 
+  const buildSignature = (data: {
+    description?: string;
+    starttime: string;
+    start: Date;
+    servicesIds: number[];
+    picture?: string;
+  }) =>
+    JSON.stringify({
+      description: data.description || "",
+      starttime: data.starttime,
+      start: format(data.start, "yyyy-MM-dd"),
+      services: [...data.servicesIds].sort((a, b) => a - b),
+      picture: data.picture || "",
+    });
   // ── Prestations réelles (remplace l'import statique "services" de Bdd) ──
   const [servicesData, setservicesData] = useState<ServiceItem[]>([]);
   const fetchPrestations = async () => {
@@ -132,13 +157,17 @@ const Planning = () => {
     });
     const adapte: Calendarevent[] = res.data.map((r: any) => ({
       id: String(r.id),
+      userName: r.user?.nameUser || "Client inconnu",
       description: r.description || "",
       picture: r.pictureUrl ? `${API_BASE}${r.pictureUrl}` : "",
       start: new Date(r.start),
       end: new Date(r.end),
       starttime: new Date(r.start).toTimeString().slice(0, 5),
       // rouge forcé si annulé, peu importe la couleur choisie à la création
-      color: r.status === "ANNULE" ? "#e6194b" : r.color,
+      color:
+        r.status === "ANNULE"
+          ? "#e6194b"
+          : r.color || getColorForCategorie(r.titre?.split(" ")[0] || ""),
       prix: String(r.prixTotal),
       duree: String(r.dureeTotal),
       nom: r.titre,
@@ -351,7 +380,7 @@ const Planning = () => {
     );
     formPayload.append("description", formData.description || "");
     if (selectedPictureFile) formPayload.append("picture", selectedPictureFile);
-
+    if (formData.color) formPayload.append("color", formData.color);
     try {
       if (editingEvent) {
         await connect.put(`/api/reservations/${editingEvent.id}`, formPayload);
@@ -400,7 +429,15 @@ const Planning = () => {
       categories: p.categories,
       servicesSelectionnes: p.servicesSelectionnes,
     });
-
+    setInitialSnapshot(
+      buildSignature({
+        description: p.description,
+        starttime: p.starttime,
+        start: p.start,
+        servicesIds: p.servicesSelectionnes.map((s) => s.id),
+        picture: p.picture,
+      }),
+    );
     setOpen(true);
     console.log(selectedslot);
   };
@@ -508,6 +545,16 @@ const Planning = () => {
   const affichagePrix = selectedServices.length ? totalPrix : formData.prix;
   const affichageDuree = selectedServices.length ? totalDuree : formData.duree;
 
+  const hasChanges =
+    !editingEvent ||
+    initialSnapshot !==
+      buildSignature({
+        description: formData.description,
+        starttime: formData.starttime,
+        start: formData.start,
+        servicesIds: selectedServices.map((s) => s.id),
+        picture: formData.picture,
+      });
   return (
     <div
       style={{
@@ -624,7 +671,16 @@ const Planning = () => {
                   fontSize: "12px",
                 }}
               >
-                <strong>{event.nom}</strong>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <strong>{event.nom}</strong>
+                  <span style={{ fontSize: "10px" }}>{event.userName}</span>
+                </div>
                 {event.picture && (
                   <img
                     src={event.picture}
@@ -830,7 +886,7 @@ const Planning = () => {
                       ))}
                     </div>
                   </div>
-                  <div className="ButonClendar">
+                  <div className="ButonClendars">
                     <Button className="error" onClick={() => setOpen(false)}>
                       Annuler
                     </Button>
@@ -875,9 +931,11 @@ const Planning = () => {
                         Annuler la validation
                       </Button>
                     )}
-                    <Button className="succes" type="submit">
-                      Confirmer
-                    </Button>
+                    {(!editingEvent || hasChanges) && (
+                      <Button className="succes" type="submit">
+                        Confirmer
+                      </Button>
+                    )}
                   </div>
                 </form>
               </div>

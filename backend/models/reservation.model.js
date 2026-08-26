@@ -56,6 +56,7 @@ const Reservation = sequelize.define("Reservation", {
     type: DataTypes.ENUM("CONFIRME", "ANNULE", "TERMINE"),
     defaultValue: "CONFIRME",
   },
+
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,

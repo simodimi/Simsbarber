@@ -84,7 +84,11 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
       const reels = conversationsRes.data.map((c: any) => ({
         id: c.userId,
         nom: c.nameUser,
-        photo: c.photoUser ? `http://localhost:5000${c.photoUser}` : img2,
+        photo: c.photoUser
+          ? c.photoUser.startsWith("http")
+            ? c.photoUser
+            : `http://localhost:5000${c.photoUser}`
+          : img2,
         unread: c.unreadCount,
         lastMessageAt: c.lastMessageAt
           ? new Date(c.lastMessageAt).getTime()

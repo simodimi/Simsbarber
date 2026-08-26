@@ -19,6 +19,7 @@ async function _construireReservation({
   prestationIds,
   description,
   pictureUrl,
+  color,
 }) {
   const prestations = await Prestation.findAll({
     where: { id: prestationIds },
@@ -48,6 +49,7 @@ async function _construireReservation({
         end: endDate,
         description,
         pictureUrl,
+        color: color || null,
         prixTotal,
         dureeTotal,
         titre: prestations.map((p) => p.nom).join(" + "),

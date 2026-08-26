@@ -52,7 +52,11 @@ const Client = ({ setvisualsms, setvisualconsult }: bgprops) => {
       });
       const adapte = res.data.map((u: any) => ({
         id: u.id,
-        photoUser: u.photoUser ? `http://localhost:5000${u.photoUser}` : img,
+        photoUser: u.photoUser
+          ? u.photoUser.startsWith("http")
+            ? u.photoUser
+            : `http://localhost:5000${u.photoUser}`
+          : img,
         nameUser: u.nameUser,
         mailUser: u.mailUser,
         statusReservationUser: u.status === "ACTIF" ? "Activer" : "Bloquer",
