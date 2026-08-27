@@ -110,7 +110,12 @@ async function reindexerCatalogue() {
   if (points.length > 0) {
     await qdrant.upsert(COLLECTION_NAME, { points });
   }
-
+  if (points.length > 0) {
+    await qdrant.upsert(COLLECTION_NAME, { points });
+  }
+  /*  console.log(
+    `[Chatbot] Réindexation terminée : ${points.length} points insérés.`,
+  );*/
   return { indexes: points.length };
 }
 
@@ -125,9 +130,10 @@ async function rechercherContexte(question, topK = 8) {
 
 async function repondre(message) {
   const contextes = await rechercherContexte(message);
-
-  const prompt = `Tu es l'assistant virtuel du salon de coiffure/barbier Sim'sBarber.
+  //console.log("CONTEXTE RÉCUPÉRÉ :", contextes);
+  const prompt = `Tu es l'assistant virtuel du salon de coiffure/barbier Sim'sBarber. Tu n'es PAS un employé, tu n'as pas de nom de personne, tu es un programme.
 Réponds à la question du client UNIQUEMENT à partir des informations ci-dessous.
+Si on te demande ton nom ou qui tu es, réponds que tu es l'assistant virtuel de Sim'sBarber — ne te fais JAMAIS passer pour un membre de l'équipe, même si les informations ci-dessous en mentionnent.
 Si l'information demandée n'y figure pas, réponds que tu ne sais pas et invite
 le client à contacter directement le salon via la messagerie.
 Reste bref, poli et professionnel.

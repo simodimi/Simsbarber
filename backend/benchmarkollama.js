@@ -5,7 +5,7 @@ const ollama = new Ollama({
   host: process.env.OLLAMA_URL || "http://localhost:11434",
 });
 
-const MODELES = ["llama3.2:1b", "llama3.2:3b", "qwen2.5:3b", "phi3.5:3.8b"];
+const MODELES = ["llama3.2:1b", "llama3.2:3b", "mistral:7b"];
 
 // Un prompt représentatif de ce que le chatbot devra vraiment faire :
 // répondre à partir d'un contexte fourni (comme dans le RAG), pas juste

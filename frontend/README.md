@@ -59,7 +59,7 @@ Application web de réservation en ligne pour un salon de coiffure barbershop, a
 
 **Chatbot / IA**
 
-- Ollama (modèle de langage local, ex. `ollama qwen2.5:3b`)
+- Ollama (modèle de langage local, ex. `mistral:7b`)
 - Qdrant (base vectorielle) pour la recherche sémantique (RAG)
 - `nomic-embed-text` pour la génération d'embeddings
 
