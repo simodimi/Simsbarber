@@ -2,7 +2,7 @@ const { verifierAccessToken } = require("../utils/tokens");
 
 module.exports = (req, res, next) => {
   // Le front doit envoyer le token dans le header HTTP "Authorization",
-  // sous la forme : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  // sous la forme : "Bearer eyJh"
   // "Bearer" est juste un mot-clé standard indiquant le TYPE d'authentification.
   const authHeader = req.headers.authorization;
 
@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
 
   try {
     const payload = verifierAccessToken(token);
-    req.user = payload; //req.user(id,role etc)
+    req.user = payload;
     next(); //le middleware est terminé
   } catch (err) {
     if (err.name === "TokenExpiredError") {

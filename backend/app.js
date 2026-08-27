@@ -17,7 +17,7 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
-// vos avatars/backgrounds statiques (dossier public/avatars, public/background)
+// avatars/backgrounds statiques (dossier public/avatars, public/background)
 app.use(express.static(path.join(__dirname, "public")));
 // fichiers uploadés dynamiquement (photos de profil, images de messages...)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

@@ -2,8 +2,8 @@ const { Ollama } = require("ollama");
 
 const ollama = new Ollama({ host: process.env.OLLAMA_URL });
 
-const CHAT_MODEL = process.env.OLLAMA_MODEL; // ex: "llama3.2:3b"
-const EMBED_MODEL = process.env.OLLAMA_EMBED_MODEL; // ex: "nomic-embed-text"
+const CHAT_MODEL = process.env.OLLAMA_MODEL;
+const EMBED_MODEL = process.env.OLLAMA_EMBED_MODEL;
 
 async function genererReponse(prompt) {
   const response = await ollama.generate({

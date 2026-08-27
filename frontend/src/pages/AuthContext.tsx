@@ -41,13 +41,6 @@ export const AuthProviderUser = ({ children }: AuthProviderProps) => {
   const hasFetched = useRef<boolean>(false);
 
   const navigate = useNavigate();
-
-  // Au chargement de l'app, on n'a plus d'accessToken en mémoire (perdu au
-  // refresh de la page). On tente donc D'ABORD un /refresh-token : le
-  // cookie refreshToken (httpOnly, 7 jours) est envoyé automatiquement par
-  // le navigateur, et s'il est valide, le serveur nous redonne un
-  // accessToken frais SANS redemander le mot de passe. Ce n'est qu'ensuite
-  // qu'on peut appeler /api/users/me (qui exige ce token).
   const fetchMe = async () => {
     try {
       const refreshRes = await connect.post("/api/auth/refresh-token");
@@ -58,9 +51,6 @@ export const AuthProviderUser = ({ children }: AuthProviderProps) => {
         setUser(res.data);
       }
     } catch (error) {
-      // Pas de refreshToken valide (jamais connecté, ou expiré après 7
-      // jours) : c'est un cas normal, pas une vraie erreur à afficher à
-      // l'utilisateur, on le laisse simplement déconnecté.
       setUser(null);
       setAccessToken(null);
     } finally {
@@ -106,8 +96,6 @@ export const AuthProviderUser = ({ children }: AuthProviderProps) => {
 
   const logout = async (): Promise<void> => {
     try {
-      // CORRIGÉ : la route backend est un POST, pas un GET
-      // (router.post("/logout", ...) dans auth.routes.js).
       await connect.post("/api/auth/logout");
     } catch (error) {
       console.error(error);

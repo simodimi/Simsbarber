@@ -1,12 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import { getAccessToken } from "./Util";
 
-// ─────────────────────────────────────────────────────────────────────────
-// Instance UNIQUE de socket, partagée par toute l'app (messages,
-// réservations, catalogue...) — pas une nouvelle connexion par composant,
-// sinon vous ouvririez une connexion WebSocket différente à chaque fois
-// qu'un composant qui l'utilise se monte.
-// ─────────────────────────────────────────────────────────────────────────
 let socket: Socket | null = null;
 
 export function getSocket(): Socket {
@@ -24,8 +18,6 @@ export function getSocket(): Socket {
 export function connectSocket(): Socket {
   const s = getSocket();
   // On reconstruit "auth" avec le token le plus À JOUR à chaque connexion,
-  // au cas où il aurait été rafraîchi entre-temps (le middleware socket
-  // côté serveur lit ce champ au moment du handshake).
   s.auth = { token: getAccessToken() };
   if (!s.connected) s.connect();
   return s;

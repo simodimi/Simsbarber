@@ -132,4 +132,4 @@ function startReminderCron() {
 }
 
 module.exports = { startReminderCron, envoyerRappels };
-if (process.env.NODE_ENV !== "production") envoyerRappels();
+//if (process.env.NODE_ENV !== "production") envoyerRappels();

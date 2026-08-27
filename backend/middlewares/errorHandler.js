@@ -1,9 +1,3 @@
-// Un middleware d'erreur Express se reconnaît à sa signature à 4 paramètres
-// (err, req, res, next) — même si "next" n'est jamais utilisé ici, il DOIT
-// rester dans la signature, sinon Express ne le traitera pas comme un
-// gestionnaire d'erreur mais comme un middleware normal, et il ne sera
-// jamais appelé au bon moment.
-
 module.exports = (err, req, res, next) => {
   console.error(err);
 

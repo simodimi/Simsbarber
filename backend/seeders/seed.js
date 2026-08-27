@@ -1,11 +1,7 @@
-// Pourquoi ce script est indispensable : votre flux d'inscription admin
-// fonctionne par APPROBATION D'UN ADMIN EXISTANT (AdminAccessRequest). Mais
 // au tout début, il n'existe justement AUCUN admin pour approuver qui que
 // ce soit — c'est le classique problème de "l'œuf et la poule". Ce script
 // crée donc le TOUT PREMIER compte admin directement en base, une seule
 // fois, à la main.
-//
-// Utilisation : node scripts/seed.js
 
 require("dotenv").config();
 const { sequelize, Admin, Category } = require("../models");

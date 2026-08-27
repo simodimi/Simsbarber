@@ -1,15 +1,3 @@
-// Compare plusieurs modèles Ollama sur le MÊME prompt, pour choisir celui
-// qui offre le meilleur compromis vitesse/qualité sur votre machine.
-//
-// Utilisation : node scripts/benchmarkOllama.js
-//
-// Avant de lancer, téléchargez les modèles que vous voulez comparer :
-//   ollama pull llama3.2:1b
-//   ollama pull llama3.2:3b
-//   ollama pull qwen2.5:3b
-//   ollama pull phi3.5:3.8b
-// (vous pouvez commenter ceux que vous ne voulez pas tester dans MODELES ci-dessous)
-
 require("dotenv").config();
 const { Ollama } = require("ollama");
 

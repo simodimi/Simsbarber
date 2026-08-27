@@ -72,7 +72,16 @@ const MessageAdmin = ({ visualsms, avissms }: bgprops) => {
       document.removeEventListener("mousedown", emoji);
     };
   }, []);
-
+  useEffect(() => {
+    const socket = connectSocket();
+    const sync = () => fetchConversations();
+    socket.on("message:new", sync);
+    socket.on("message:broadcast", sync);
+    return () => {
+      socket.off("message:new", sync);
+      socket.off("message:broadcast", sync);
+    };
+  }, []);
   // Récupération des conversations
   const fetchConversations = async () => {
     try {

@@ -23,7 +23,7 @@ async function connecterAdmin({ emailAdmin, passwordAdmin }) {
   return { admin, accessToken, refreshToken };
 }
 
-// ── RAFRAÎCHISSEMENT DU TOKEN ADMIN (même principe que côté user) ──
+// RAFRAÎCHISSEMENT DU TOKEN ADMIN
 async function rafraichirTokenAdmin(refreshTokenValue) {
   if (!refreshTokenValue) throw new ErreurMetier("Refresh token manquant", 401);
 
@@ -47,20 +47,12 @@ async function obtenirStatutDemande(requestId) {
   const request = await AdminAccessRequest.findByPk(requestId);
   if (!request) throw new ErreurMetier("Demande introuvable", 404);
   // On ne renvoie QUE le statut, jamais le reste (email, mot de passe
-  // hashé...) : cette route est PUBLIQUE (pas de token), donc accessible à
-  // n'importe qui connaissant l'id de la demande - autant limiter au strict
-  // nécessaire.
+  // hashé...)
   return { status: request.status };
 }
 
-// ── MOT DE PASSE OUBLIÉ (ADMIN) : même principe que côté user, mais sur la
-// table Admin. On réutilise PasswordResetCode tel quel : ce modèle stocke
-// juste un email/code/expiresAt générique, sans lien direct vers User ou
-// Admin, donc il convient aux deux sans rien modifier.
 async function demanderResetPasswordAdmin(emailAdmin) {
   const admin = await Admin.findOne({ where: { emailAdmin } });
-  // Même logique anti-énumération que côté user : pas d'erreur explicite
-  // si l'email n'existe pas.
   if (!admin) return;
 
   const code = Math.floor(10000 + Math.random() * 90000).toString();
@@ -143,10 +135,6 @@ async function demanderAccesAdmin({ nameAdmin, emailAdmin, passwordAdmin }) {
     ),
   );
 
-  // AJOUTÉ : email avec boutons Approuver/Refuser directement cliquables,
-  // sans passer par une connexion au tableau de bord. Chaque admin reçoit
-  // DES LIENS QUI LUI SONT PROPRES (adminId encodé dans le token), pour que
-  // la décision soit correctement attribuée à celui qui a cliqué.
   const backendUrl =
     process.env.BACKEND_URL || `http://localhost:${process.env.SERVER_PORT}`;
 

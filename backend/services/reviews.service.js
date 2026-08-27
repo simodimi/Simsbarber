@@ -2,9 +2,6 @@ const { Op } = require("sequelize");
 const { Review, User, Reservation, Prestation } = require("../models");
 const { ErreurMetier } = require("./auth.service");
 
-/*async function creer(userId, data) {
-  return Review.create({ ...data, userId });
-}*/
 async function creer(userId, { note, commentaire, reservationId }) {
   // Vérifier que la réservation existe et appartient à l'utilisateur
   const reservation = await Reservation.findByPk(reservationId);

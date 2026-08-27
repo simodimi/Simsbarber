@@ -1,23 +1,7 @@
 const jwt = require("jsonwebtoken");
 
-// ─────────────────────────────────────────────────────────────────────────
-// Centraliser la génération/vérification des tokens ICI, plutôt que
-// d'appeler jwt.sign()/jwt.verify() directement dans chaque controller,
-// pour deux raisons :
-// 1. Si vous changez un jour la durée de vie des tokens ou leur contenu,
-//    vous modifiez UN SEUL endroit, pas dix controllers différents.
-// 2. Ça évite les fautes de frappe/incohérences (un controller qui mettrait
-//    "1h" et un autre "60m" pour la même chose, par exemple).
-// ─────────────────────────────────────────────────────────────────────────
-
-// payload = les infos qu'on veut retrouver plus tard en décodant le token.
-// "sub" (= "subject") est un nom de champ STANDARD en JWT pour désigner
-// l'identifiant de la personne concernée par le token — pas obligatoire de
-// l'appeler comme ça, mais c'est la convention.
 function genererAccessToken(payload) {
   // durée de vie COURTE : si ce token est volé, la fenêtre d'exploitation
-  // pour l'attaquant est minimale (voir le document "Comprendre son
-  // Backend" pour le détail du raisonnement).
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "15m" });
 }
 
@@ -41,16 +25,6 @@ function verifierRefreshToken(token) {
   return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
 }
 
-// ─────────────────────────────────────────────────────────────────────────
-// TOKENS D'ACTION PAR EMAIL — différents des access/refresh tokens :
-// - Signés avec un secret dédié (ACTION_TOKEN_SECRET), pour qu'un access
-//   token classique volé ne puisse jamais être détourné pour usurper une
-//   action d'approbation, et inversement.
-// - Contiennent directement l'action à effectuer (requestId, adminId,
-//   action), pas juste une identité : le lien EST l'autorisation.
-// - Durée de vie courte (3 jours) : au-delà, l'admin devra se rendre sur
-//   le vrai tableau de bord.
-// ─────────────────────────────────────────────────────────────────────────
 function genererActionToken(payload) {
   return jwt.sign(payload, process.env.ACTION_TOKEN_SECRET, {
     expiresIn: "3d",

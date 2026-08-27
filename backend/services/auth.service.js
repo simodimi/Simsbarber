@@ -45,7 +45,6 @@ async function connecterUser({ mailUser, passwordUser }) {
   return { user, accessToken, refreshToken };
 }
 
-// ── RAFRAÎCHISSEMENT DU TOKEN ──
 // Reçoit le refreshToken (7 jours) lu depuis le cookie httpOnly, et renvoie
 // un accessToken TOUT NEUF (15 minutes), sans redemander le mot de passe.
 async function rafraichirToken(refreshTokenValue) {

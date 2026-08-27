@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Connexion from "./pages/Connexion";
 import Notification from "./ui/Notification";
@@ -44,7 +44,7 @@ interface Clients {
   statusReservationUser: "Activer" | "Bloquer";
 }
 function App() {
-  const [visualbackground, setvisualbackground] = useState<string | null>(null);
+  const [_, setvisualbackground] = useState<string | null>(null);
   const [visualsms, setvisualsms] = useState<number | null>(null);
   const [avissms, setavissms] = useState<number | null>(null);
   const [visualconsult, setvisualconsult] = useState<Clients | null>(null);
@@ -89,8 +89,14 @@ function App() {
     <div className="AppHome">
       <BrowserRouter>
         <AuthProviderUser>
-          <NotificationProvider>
-            <Routes>
+          <Routes>
+            <Route
+              element={
+                <NotificationProvider>
+                  <Outlet />
+                </NotificationProvider>
+              }
+            >
               <Route path="/" element={<Connexion />} />
               <Route path="/inscription" element={<Inscription />} />
               <Route path="/accueil" element={<Accueil />} />
@@ -120,21 +126,23 @@ function App() {
                   />
                 </Route>
               </Route>
+            </Route>
 
-              {/*côté admin */}
-              <Route
-                path="/admin/*"
-                element={
-                  <AuthProviderAdmin>
+            {/*côté admin */}
+            <Route
+              path="/admin/*"
+              element={
+                <AuthProviderAdmin>
+                  <NotificationProvider>
                     <Adminlayout />
-                  </AuthProviderAdmin>
-                }
-              />
-              <Route path="/autorisation" element={<InscriptionAfter />} />
-              <Route path="*" element={<ErrorPage />} />
-            </Routes>
-            <Notification />
-          </NotificationProvider>
+                  </NotificationProvider>
+                </AuthProviderAdmin>
+              }
+            />
+            <Route path="/autorisation" element={<InscriptionAfter />} />
+            <Route path="*" element={<ErrorPage />} />
+          </Routes>
+          <Notification />
         </AuthProviderUser>
       </BrowserRouter>
     </div>

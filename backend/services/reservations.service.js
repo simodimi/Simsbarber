@@ -21,6 +21,14 @@ async function _construireReservation({
   pictureUrl,
   color,
 }) {
+  const client = await User.findByPk(userId);
+  if (!client) throw new ErreurMetier("Client introuvable", 404);
+  if (client.status === "BLOQUE") {
+    throw new ErreurMetier(
+      "Ce compte a été bloqué, réservation impossible. Contactez le salon.",
+      403,
+    );
+  }
   const prestations = await Prestation.findAll({
     where: { id: prestationIds },
   });
@@ -143,9 +151,6 @@ async function annulerReservationUtilisateur(id, userId) {
   reservation.status = "ANNULE";
   await reservation.save();
 
-  // ⚠️ à vérifier selon votre implémentation de notificationsService :
-  // ici on notifie le salon (et non le client) puisque c'est lui qui a
-  // annulé. Adaptez recipientType si "ADMIN" n'existe pas tel quel.
   await notificationsService.creerNotification({
     recipientType: "ADMIN",
     type: "RESERVATION_ANNULEE_PAR_CLIENT",
@@ -173,7 +178,7 @@ async function modifierReservation(id, data) {
     const { start, end } = await validerCreneau(
       { start: startValue, dureeTotal, userId: reservation.userId },
       id,
-    ); // 2e argument = exclure CETTE réservation du contrôle de chevauchement/quota
+    );
     data.start = start;
     data.end = end;
     data.dureeTotal = dureeTotal;
@@ -199,32 +204,6 @@ async function supprimerReservation(id) {
   await reservation.destroy();
 }
 
-/*async function listerMesReservations(
-  userId,
-  { page = 1, itemsParPage = 3 } = {},
-) {
-  const offset = (page - 1) * itemsParPage;
-
-  const { rows: passees, count: totalPassees } =
-    await Reservation.findAndCountAll({
-      where: { userId, start: { [require("sequelize").Op.lt]: new Date() } },
-      include: [{ model: Prestation, as: "prestations" }],
-      order: [["start", "DESC"]],
-      limit: itemsParPage,
-      offset,
-    });
-
-  const { rows: aVenir, count: totalAVenir } =
-    await Reservation.findAndCountAll({
-      where: { userId, start: { [require("sequelize").Op.gte]: new Date() } },
-      include: [{ model: Prestation, as: "prestations" }],
-      order: [["start", "ASC"]],
-      limit: itemsParPage,
-      offset,
-    });
-
-  return { passees, totalPassees, aVenir, totalAVenir };
-}*/
 async function listerMesReservations(
   userId,
   { type = "all", page = 1, itemsParPage = 3 } = {},
@@ -237,10 +216,7 @@ async function listerMesReservations(
   } else if (type === "upcoming") {
     where.start = { [Op.gte]: new Date() };
   }
-  // sinon "all" – pas de filtre sur la date (mais on va plutôt renvoyer les deux séparément comme avant pour ne pas casser)
 
-  // On ne garde que le type pour la pagination, car on veut deux listes distinctes.
-  // On peut donc simplement réutiliser la même fonction avec un paramètre type.
   const { rows, count } = await Reservation.findAndCountAll({
     where,
     include: [

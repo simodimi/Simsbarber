@@ -6,21 +6,6 @@ const { Prestation, Category, TeamMenber } = require("../models");
 const HORAIRES =
   "Le salon est ouvert du lundi au samedi de 9h à 19h, fermé le dimanche.";
 
-// CORRIGÉ : avant, on essayait de "vider" la collection avec
-// qdrant.delete(COLLECTION_NAME, { filter: {} }), qui ne supprime pas
-// fiablement TOUS les points existants (un filtre vide n'est pas
-// garanti d'être interprété comme "tout sélectionner" selon les
-// versions de l'API Qdrant, et l'erreur était avalée silencieusement par
-// le .catch(() => {})). Résultat concret : d'anciennes entrées (vos 12
-// doublons de test) restaient dans la collection, mélangées aux nouvelles,
-// et polluaient les résultats de recherche.
-//
-// Nouvelle approche, plus radicale mais fiable à 100% : on SUPPRIME la
-// collection entière puis on la RECRÉE à chaque réindexation. Plus de
-// risque de résidus. Le petit coût : la collection est indisponible
-// pendant les quelques centaines de ms que prend l'opération — largement
-// acceptable pour un usage admin ponctuel (pas appelé à chaque requête
-// utilisateur).
 async function recreerCollection() {
   await qdrant.deleteCollection(COLLECTION_NAME).catch(() => {
     // ignore l'erreur si la collection n'existait simplement pas encore

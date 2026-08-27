@@ -36,7 +36,7 @@ const InscriptionAfter = () => {
     };
   }, []);
   const local = useLocation();
-  const from = local.state?.from;
+  // const from = local.state?.from;
   // Récupéré depuis navigate("/attente-validation", { state: { requestId } })
   // dans InscriptionAdmin.tsx.
   const requestId = local.state?.requestId;
@@ -73,13 +73,13 @@ const InscriptionAfter = () => {
 
     return () => clearInterval(interval);
   }, [requestId, navigate]);
-  const handlenavigate = () => {
+  /* const handlenavigate = () => {
     if (from?.startsWith("/admin")) {
       navigate("/admin/");
     } else {
       navigate("/");
     }
-  };
+  };*/
   return (
     <div className="ErrorHome">
       <div className="ErrorButton">

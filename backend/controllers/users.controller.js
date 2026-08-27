@@ -67,8 +67,6 @@ exports.getAllUsers = async (req, res, next) => {
   try {
     const { search = "" } = req.query;
     const users = await usersService.getAllUsers(search);
-
-    // Retourner toujours un tableau, même vide
     res.json(users);
   } catch (err) {
     // Utiliser next(err) pour que l'erreur passe par votre middleware errorHandler

@@ -123,7 +123,10 @@ const Siderbar = () => {
                   style={{ textDecoration: "none" }}
                 >
                   {" "}
-                  <div className="AccueilNavbarConnectOptionList">
+                  <div
+                    className="AccueilNavbarConnectOptionList"
+                    style={{ position: "relative" }}
+                  >
                     <img src={profil} alt="" />
                     <p>Mon Profil</p>
                     {unreadCount > 0 && (
@@ -132,7 +135,7 @@ const Siderbar = () => {
                           position: "absolute",
                           top: "-5px",
                           right: "-10px",
-                          backgroundColor: "red",
+                          backgroundColor: "green",
                           color: "white",
                           borderRadius: "50%",
                           padding: "2px 6px",

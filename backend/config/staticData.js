@@ -35,7 +35,7 @@ const BACKGROUNDS = [
 const COULEURS_RESERVATION = [
   { id: 1, label: "Confirmé", hex: "#27ae60" },
   { id: 2, label: "En attente", hex: "#f1c40f" },
-  { id: 3, label: "Annulé", hex: "#e74c3c" }, // celle qui doit s'afficher automatiquement quand l'admin annule
+  { id: 3, label: "Annulé", hex: "#e74c3c" },
 ];
 
 module.exports = { AVATARS, BACKGROUNDS, COULEURS_RESERVATION };

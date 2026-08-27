@@ -59,7 +59,6 @@ exports.cancel = async (req, res, next) => {
 };
 
 // Annulation par le client sur SA PROPRE réservation : refusée à moins de
-// 24h du début (voir reservations.service.js -> annulerReservationUtilisateur).
 exports.cancelMine = async (req, res, next) => {
   try {
     const reservation = await reservationsService.annulerReservationUtilisateur(
@@ -119,7 +118,7 @@ exports.remove = async (req, res, next) => {
 
 exports.mine = async (req, res, next) => {
   try {
-    const type = req.query.type || "all"; // past, upcoming, all
+    const type = req.query.type || "all";
     const page = Number(req.query.page) || 1;
     const itemsParPage = Number(req.query.itemsParPage) || 3;
     const data = await reservationsService.listerMesReservations(req.user.sub, {

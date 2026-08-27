@@ -52,14 +52,14 @@ exports.update = async (req, res, next) => {
   try {
     const data = { ...req.body };
 
-    // ---- Gestion de l'image principale ----
+    // Gestion de l'image principale
     if (req.files?.image?.[0]) {
       data.image = getImageUrl(req.files.image[0]);
     } else if (req.body.removeImage === "true") {
-      data.image = null; // ou "" selon votre modèle
+      data.image = null;
     }
 
-    // ---- Gestion de la galerie ----
+    // Gestion de la galerie
     const galerieChangee = !!(
       req.files?.galerie1?.[0] ||
       req.files?.galerie2?.[0] ||

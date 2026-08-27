@@ -36,12 +36,13 @@ async function listerPourAdmin(adminId) {
 async function marquerCommeLue(id) {
   await Notification.update({ read: true }, { where: { id } });
 }
-async function compterNonLues({ recipientType, userId, adminId }) {
+async function compterNonLues({ recipientType, userId, adminId, type }) {
   return Notification.count({
     where: {
       recipientType,
       ...(userId ? { userId } : {}),
       ...(adminId ? { adminId } : {}),
+      ...(type ? { type } : {}),
       read: false,
     },
   });

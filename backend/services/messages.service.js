@@ -63,37 +63,6 @@ async function envoyerMessageAdmin(userId, adminId, { content, imageUrl }) {
   return message;
 }
 
-/*async function envoyerBroadcast(adminId, { content, imageUrl }) {
-  const users = await User.findAll({ attributes: ["id"] });
-
-  const messages = await Promise.all(
-    users.map(async (user) => {
-      const conversation = await obtenirOuCreerConversation(user.id);
-      const message = await Message.create({
-        conversationId: conversation.id,
-        senderType: "ADMIN",
-        senderAdminId: adminId,
-        content,
-        imageUrl,
-        isBroadcast: true,
-      });
-      conversation.lastMessageAt = new Date();
-      await conversation.save();
-
-      await notificationsService.creerNotification({
-        recipientType: "USER",
-        userId: user.id,
-        type: "NOUVEAU_MESSAGE",
-        content: "Nouvelle annonce du salon",
-        link: "/profil/message",
-      });
-
-      return message;
-    }),
-  );
-
-  return messages;
-}*/
 async function envoyerBroadcast(adminId, { content, imageUrl }) {
   const users = await User.findAll({ attributes: ["id"] });
   const broadcastGroupId = crypto.randomUUID();
@@ -165,57 +134,6 @@ async function obtenirMessagesAdmin(userId, adminId) {
   });
 }
 
-/*async function listerConversationsAdmin() {
-  const users = await User.findAll({
-    attributes: ["id", "nameUser", "photoUser"],
-    order: [["nameUser", "ASC"]],
-  });
-
-  const conversations = await Conversation.findAll();
-  const convParUser = Object.fromEntries(
-    conversations.map((c) => [c.userId, c]),
-  );
-
-  const nonLus = await Message.findAll({
-    where: { senderType: "USER", readAt: null },
-    attributes: [
-      "conversationId",
-      [
-        Message.sequelize.fn("COUNT", Message.sequelize.col("idmessage")),
-        "count",
-      ],
-    ],
-    group: ["conversationId"],
-    raw: true,
-  });
-
-  const convIdToUserId = Object.fromEntries(
-    conversations.map((c) => [c.id, c.userId]),
-  );
-  const nonLusParUser = {};
-  nonLus.forEach((row) => {
-    const uid = convIdToUserId[row.conversationId];
-    if (uid) nonLusParUser[uid] = Number(row.count);
-  });
-
-  return users
-    .map((u) => ({
-      userId: u.id,
-      nameUser: u.nameUser,
-      photoUser: u.photoUser,
-      lastMessageAt: convParUser[u.id]?.lastMessageAt || null,
-      unreadCount: nonLusParUser[u.id] || 0,
-    }))
-    .sort((a, b) => {
-      if (!a.lastMessageAt && !b.lastMessageAt) return 0;
-      if (!a.lastMessageAt) return 1;
-      if (!b.lastMessageAt) return -1;
-      return (
-        new Date(b.lastMessageAt).getTime() -
-        new Date(a.lastMessageAt).getTime()
-      );
-    });
-}*/
 async function listerConversationsAdmin() {
   const users = await User.findAll({
     attributes: ["id", "nameUser", "photoUser"],

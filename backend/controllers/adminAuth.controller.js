@@ -100,10 +100,6 @@ exports.handleEmailAction = async (req, res, next) => {
     const result = await adminAuthService.traiterActionDepuisEmail(
       req.query.token,
     );
-
-    // On répond directement en HTML (pas en JSON) : ce lien est ouvert dans
-    // un navigateur depuis un client mail, pas appelé par votre front React
-    // - un simple message de confirmation lisible suffit.
     const message =
       result.action === "approve"
         ? `<h1>Compte approuvé</h1><p>Le compte de ${result.admin.nameAdmin} a bien été créé.</p>`

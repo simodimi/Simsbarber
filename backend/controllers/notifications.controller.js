@@ -27,10 +27,12 @@ exports.unreadCount = async (req, res, next) => {
         ? await notificationsService.compterNonLues({
             recipientType: "ADMIN",
             adminId: req.user.sub,
+            type: "NOUVEAU_MESSAGE",
           })
         : await notificationsService.compterNonLues({
             recipientType: "USER",
             userId: req.user.sub,
+            type: "NOUVEAU_MESSAGE",
           });
     res.json({ count });
   } catch (err) {
